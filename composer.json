@@ -1,0 +1,27 @@
+{
+  "name": "soatok/cupcake",
+  "description": "PHP utility for building and processing forms",
+  "license": "ISC",
+  "autoload": {
+    "psr-4": {
+      "Soatok\\Cupcake\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Soatok\\Cupcake\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "^8",
+    "paragonie/ionizer": "^1",
+    "ezyang/htmlpurifier": "^4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9",
+    "vimeo/psalm": "^4"
+  },
+  "scripts": {
+    "test": ["phpunit"]
+  }
+}
