@@ -40,6 +40,18 @@ trait StapleTrait
     }
 
     /**
+     * Override this to handle element-specific behaviors
+     *
+     * @param string $name
+     * @param bool $value
+     * @return string
+     */
+    public function boolPropertyValue(string $name, bool $value): string
+    {
+        return $value ? '1' : '0';
+    }
+
+    /**
      * Flatten the attributes and return them as a string.
      *
      * @return string
@@ -64,7 +76,11 @@ trait StapleTrait
                 $property = $key;
             }
             if (property_exists($this, $property)) {
-                $pieces[$key] = $this->{$property};
+                if (is_bool($this->{$property})) {
+                    $pieces[$key] = $this->boolPropertyValue($property, $this->{$property});
+                } else {
+                    $pieces[$key] = $this->{$property};
+                }
             }
         }
 

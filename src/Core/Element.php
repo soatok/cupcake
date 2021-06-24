@@ -10,13 +10,12 @@ use ParagonIE\Ionizer\InputFilter;
  */
 abstract class Element implements IngredientInterface
 {
-    use StapleTrait;
+    use NameTrait, StapleTrait;
 
     protected ?bool $autocomplete = null;
     protected bool $required = false;
     protected ?InputFilter $filter = null;
     protected string $pattern;
-    protected string $name;
 
     /**
      * Ionizer input filter for the given input parameter.
