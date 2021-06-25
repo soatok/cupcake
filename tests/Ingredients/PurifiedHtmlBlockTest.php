@@ -8,7 +8,7 @@ use Soatok\Cupcake\Ingredients\PurifiedHtmlBlock;
 /**
  * Class PurifiedHtmlBlockTest
  * @package Soatok\Cupcake\Tests\Ingredients
- * @covers \Soatok\Cupcake\Ingredients\PurifiedHtmlBlock
+ * @covers PurifiedHtmlBlock
  */
 class PurifiedHtmlBlockTest extends TestCase
 {

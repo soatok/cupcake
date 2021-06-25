@@ -10,7 +10,7 @@ use Soatok\Cupcake\Ingredients\File;
 /**
  * Class FormTest
  * @package Soatok\Cupcake\Tests
- * @covers \Soatok\Cupcake\Form
+ * @covers Form
  */
 class FormTest extends TestCase
 {

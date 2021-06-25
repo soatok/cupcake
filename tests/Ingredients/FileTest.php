@@ -8,7 +8,7 @@ use Soatok\Cupcake\Ingredients\File;
 /**
  * Class FileTest
  * @package Soatok\Cupcake\Tests\Ingredients
- * @covers \Soatok\Cupcake\Ingredients\File
+ * @covers File
  */
 class FileTest extends TestCase
 {

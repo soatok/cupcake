@@ -9,7 +9,7 @@ use Soatok\Cupcake\Ingredients\PurifiedHtmlBlock;
 /**
  * Class FieldsetTest
  * @package Soatok\Cupcake\Tests\Ingredients
- * @covers \Soatok\Cupcake\Ingredients\Fieldset
+ * @covers Fieldset
  */
 class FieldsetTest extends TestCase
 {

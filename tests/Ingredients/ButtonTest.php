@@ -8,7 +8,7 @@ use Soatok\Cupcake\Ingredients\Button;
 /**
  * Class ButtonTest
  * @package Soatok\Cupcake\Tests\Ingredients
- * @covers \Soatok\Cupcake\Ingredients\Button
+ * @covers Button
  */
 class ButtonTest extends TestCase
 {

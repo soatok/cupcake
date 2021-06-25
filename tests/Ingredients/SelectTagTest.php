@@ -10,7 +10,7 @@ use Soatok\Cupcake\Ingredients\SelectTag;
 /**
  * Class SelectTagTest
  * @package Soatok\Cupcake\Tests\Ingredients
- * @covers \Soatok\Cupcake\Ingredients\SelectTag
+ * @covers SelectTag
  */
 class SelectTagTest extends TestCase
 {

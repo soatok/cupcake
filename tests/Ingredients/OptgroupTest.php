@@ -3,20 +3,20 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients;
 
 use PHPUnit\Framework\TestCase;
-use Soatok\Cupcake\Ingredients\InputTag;
+use Soatok\Cupcake\Ingredients\Optgroup;
 
 /**
- * Class InputTagTest
+ * Class OptgroupTest
  * @package Soatok\Cupcake\Tests\Ingredients
- * @covers InputTag
+ * @covers Optgroup
  */
-class InputTagTest extends TestCase
+class OptgroupTest extends TestCase
 {
     public function testEmpty()
     {
         $this->assertSame(
-            '<input type="text" name="foo" />',
-            (new InputTag('foo')) . ''
+            '<optgroup label=""></optgroup>',
+            (new Optgroup()) . ''
         );
     }
 }

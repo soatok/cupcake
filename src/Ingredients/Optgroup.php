@@ -20,9 +20,9 @@ class Optgroup extends Container
 
     /**
      * @param IngredientInterface $ingredient
-     * @return self
+     * @return Container
      */
-    public function append(IngredientInterface $ingredient): self
+    public function append(IngredientInterface $ingredient): Container
     {
         if (!($ingredient instanceof Option)) {
             throw new \TypeError('Optgroups can only contain options');
