@@ -24,12 +24,16 @@ class ButtonTest extends TestCase
     {
         $this->assertSame(
             '<button>test label</button>',
-            (new Button('test label')) . ''
+            (new Button('', 'test label')) . ''
+        );
+        $this->assertSame(
+            '<button name="foo">test label</button>',
+            (new Button('foo', 'test label')) . ''
         );
 
         $this->assertSame(
             '<button>test</button>',
-            (new Button('<script>alert("xss");</script>test')) . '',
+            (new Button('', '<script>alert("xss");</script>test')) . '',
             'Possible XSS vulnerability'
         );
     }

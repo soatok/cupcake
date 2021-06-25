@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Ingredients;
 
 use Soatok\Cupcake\Core\Container;
+use Soatok\Cupcake\Core\IngredientInterface;
 use Soatok\Cupcake\Core\Utilities;
 
 /**
@@ -12,6 +13,14 @@ use Soatok\Cupcake\Core\Utilities;
 class Fieldset extends Container
 {
     protected string $legend = '';
+
+    public function __construct(string $legend = '', IngredientInterface ...$ingredients)
+    {
+        $this->legend = $legend;
+        foreach ($ingredients as $ingredient) {
+            $this->append($ingredient);
+        }
+    }
 
     /**
      * @param string $legend

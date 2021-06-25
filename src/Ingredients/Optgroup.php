@@ -13,9 +13,12 @@ class Optgroup extends Container
 {
     protected string $label;
 
-    public function __construct(string $label = '')
+    public function __construct(string $label = '', Option ...$options)
     {
         $this->label = $label;
+        foreach ($options as $option) {
+            $this->append($option);
+        }
     }
 
     /**
