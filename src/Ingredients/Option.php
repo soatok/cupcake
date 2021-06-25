@@ -34,11 +34,11 @@ class Option extends Element
      */
     public function customAttributes(): array
     {
-        $elements = ['value' => null];
+        $attributes = ['value' => null];
         if ($this->selected) {
-            $elements['selected'] = null;
+            $attributes['selected'] = null;
         }
-        return $elements;
+        return $attributes;
     }
 
     /**

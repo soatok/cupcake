@@ -58,7 +58,7 @@ trait StapleTrait
      */
     public function flattenAttributes(): string
     {
-        $pieces = [];
+        $pieces = $this->renderAttributes();
 
         if (!empty($this->id)) {
             $pieces['id'] = Utilities::escapeAttribute($this->id);
@@ -89,7 +89,7 @@ trait StapleTrait
         }
         $return = '';
         foreach ($pieces as $attr => $value) {
-            $return .= "{$attr}=\"{$value}\" ";
+            $return .= "{$attr}=\"" . Utilities::escapeAttribute($value) . "\" ";
         }
         return ' ' . trim($return);
     }

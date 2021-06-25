@@ -44,6 +44,16 @@ abstract class Element implements IngredientInterface
     }
 
     /**
+     * Direct key-value pair to include in output
+     *
+     * @return array<string, string>
+     */
+    public function renderAttributes(): array
+    {
+        return [];
+    }
+
+    /**
      * @return string
      */
     abstract public function render(): string;

@@ -40,6 +40,18 @@ class SelectTagTest extends TestCase
             '</select>',
             $sel . ''
         );
+        $sel->append(new Option('XSS', '" onload="alert(\'xss\');'));
+
+        $this->assertSame(
+            '<select name="foo">' .
+                '<option value="1">Bar</option>' .
+                '<option value="2" selected="selected">Baz</option>' .
+                '<option value="3">Qux</option>' .
+                '<option value="&quot; onload&equals;&quot;alert&lpar;&apos;xss&apos;&rpar;&semi;">XSS</option>' .
+            '</select>',
+            $sel . '',
+            'Potential XSS vulnerability'
+        );
     }
 
     public function testWithOptgroups()
@@ -64,6 +76,21 @@ class SelectTagTest extends TestCase
                 '<option value="3">Qux</option>' .
             '</select>',
             $sel . ''
+        );
+        $sel->append(new Option('XSS', '" onload="alert(\'xss\');'));
+        $this->assertSame(
+            '<select name="foo">' .
+                '<option value="1">Bar</option>' .
+                '<option value="2" selected="selected">Baz</option>' .
+                '<optgroup label="Tests">' .
+                    '<option value="4">Test 1</option>' .
+                    '<option value="5">Test 2</option>' .
+                '</optgroup>' .
+                '<option value="3">Qux</option>' .
+                '<option value="&quot; onload&equals;&quot;alert&lpar;&apos;xss&apos;&rpar;&semi;">XSS</option>' .
+            '</select>',
+            $sel . '',
+            'Potential XSS vulnerability'
         );
     }
 }

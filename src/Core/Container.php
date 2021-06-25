@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Core;
 
-use Soatok\Cupcake\Ingredients\File;
+use Soatok\Cupcake\Ingredients\Input\File;
 
 /**
  * Class Container
@@ -34,6 +34,16 @@ abstract class Container implements IngredientInterface
      * @return array<string, ?string>
      */
     public function customAttributes(): array
+    {
+        return [];
+    }
+
+    /**
+     * Direct key-value pair to include in output
+     *
+     * @return array<string, string>
+     */
+    public function renderAttributes(): array
     {
         return [];
     }

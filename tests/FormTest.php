@@ -5,7 +5,7 @@ namespace Soatok\Cupcake\Tests;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Form;
 use Soatok\Cupcake\Ingredients\Fieldset;
-use Soatok\Cupcake\Ingredients\File;
+use Soatok\Cupcake\Ingredients\Input\File;
 
 /**
  * Class FormTest
@@ -30,7 +30,7 @@ class FormTest extends TestCase
         );
         $this->assertTrue($form->hasFileInput());
         $this->assertStringContainsString(
-            'enctype="multipart/form-data"',
+            'enctype="multipart&sol;form-data"',
             $form->render(),
             'Adding a file input should set the enctype to multipart/form-data'
         );

@@ -3,7 +3,7 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients;
 
 use PHPUnit\Framework\TestCase;
-use Soatok\Cupcake\Ingredients\File;
+use Soatok\Cupcake\Ingredients\Input\File;
 
 /**
  * Class FileTest

@@ -32,6 +32,8 @@ class Utilities
     /**
      * @param string $input
      * @return string
+     *
+     * @psalm-taint-escape html
      */
     public static function escapeAttribute(string $input): string
     {
@@ -41,6 +43,8 @@ class Utilities
     /**
      * @param array $classes
      * @return string
+     *
+     * @psalm-taint-escape html
      */
     public static function escapeClasses(array $classes): string
     {
@@ -75,6 +79,8 @@ class Utilities
     /**
      * @param string $input
      * @return string
+     *
+     * @psalm-taint-escape html
      */
     public static function purify(string $input): string
     {

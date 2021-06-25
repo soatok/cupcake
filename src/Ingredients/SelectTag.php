@@ -54,11 +54,11 @@ class SelectTag extends Container
      */
     public function customAttributes(): array
     {
-        $elements = [];
+        $attributes = [];
         if (!empty($this->name)) {
-            $elements['name'] = null;
+            $attributes['name'] = null;
         }
-        return $elements;
+        return $attributes;
     }
 
     /**

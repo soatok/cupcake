@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Ingredients;
 
 use Soatok\Cupcake\Core\Element;
+use Soatok\Cupcake\Core\ValueTrait;
 
 /**
  * Class InputTag
@@ -10,7 +11,9 @@ use Soatok\Cupcake\Core\Element;
  */
 class InputTag extends Element
 {
+    use ValueTrait;
     protected string $type = 'text';
+    protected ?Datalist $datalist = null;
 
     /**
      * InputTag constructor.
@@ -19,6 +22,16 @@ class InputTag extends Element
     public function __construct(string $name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @param Datalist $list
+     * @return self
+     */
+    public function setList(Datalist $list): self
+    {
+        $this->datalist = $list;
+        return $this;
     }
 
     /**
@@ -31,7 +44,24 @@ class InputTag extends Element
      */
     public function customAttributes(): array
     {
-        return ['type' => null, 'name' => null];
+        $attributes = ['type' => null, 'name' => null];
+        if (!empty($this->value)) {
+            $attributes['value'] = null;
+        }
+        return $attributes;
+    }
+
+    /**
+     * Direct key-value pair to include in output
+     *
+     * @return array<string, string>
+     */
+    public function renderAttributes(): array
+    {
+        if ($this->datalist) {
+            return ['list' => $this->datalist->getId()];
+        }
+        return parent::renderAttributes();
     }
 
     /**

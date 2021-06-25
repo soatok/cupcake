@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace Soatok\Cupcake;
 
 use Soatok\Cupcake\Core\Container;
-use Soatok\Cupcake\Core\Utilities;
 
 /**
  * Class Form

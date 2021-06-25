@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
-namespace Soatok\Cupcake\Ingredients;
+namespace Soatok\Cupcake\Ingredients\Input;
+
+use Soatok\Cupcake\Ingredients\InputTag;
 
 /**
  * Class File

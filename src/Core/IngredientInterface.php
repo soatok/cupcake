@@ -26,4 +26,11 @@ interface IngredientInterface
      * @return array<string, ?string>
      */
     public function customAttributes(): array;
+
+    /**
+     * Direct key-value pair to include in output
+     *
+     * @return array<string, string>
+     */
+    public function renderAttributes(): array;
 }
