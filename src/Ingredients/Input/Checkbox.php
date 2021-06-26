@@ -6,15 +6,28 @@ use Soatok\Cupcake\Core\ValueTrait;
 use Soatok\Cupcake\Ingredients\InputTag;
 
 /**
- * Class Radio
+ * Class Checkbox
  * @package Soatok\Cupcake\Ingredients\Input
  */
-class Radio extends InputTag
+class Checkbox extends InputTag
 {
     use ValueTrait;
 
     protected bool $checked = false;
-    protected string $type = 'radio';
+    protected string $type = 'checkbox';
+
+    /**
+     * Checkbox constructor.
+     * @param string $name
+     * @param string $id
+     * @param string $value
+     */
+    public function __construct(string $name, string $id = '', string $value = '')
+    {
+        parent::__construct($name);
+        $this->id = $id;
+        $this->value = $value;
+    }
 
     /**
      * @param bool $checked

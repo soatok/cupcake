@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
-namespace Soatok\Cupcake\Tests;
+namespace Soatok\Cupcake\Tests\Blends;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use Soatok\Cupcake\RadioSet;
+use Soatok\Cupcake\Blends\RadioSet;
 
 /**
  * Class RadioSetTest

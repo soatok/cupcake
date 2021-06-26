@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace Soatok\Cupcake;
+namespace Soatok\Cupcake\Blends;
 
 use Exception;
 use Soatok\Cupcake\Core\Container;
