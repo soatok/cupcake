@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Core;
 
+use Soatok\Cupcake\Exceptions\CupcakeException;
 use Soatok\Cupcake\Ingredients\Input\File;
 
 /**
@@ -163,5 +164,34 @@ abstract class Container implements IngredientInterface
             }
         }
         return false;
+    }
+
+    /**
+     * @param array $objectsVisited
+     * @param array $inputFilters
+     * @throws CupcakeException
+     */
+    protected function getInputFiltersInternal(
+        array &$objectsVisited,
+        array &$inputFilters
+    ): void {
+        if (in_array(spl_object_hash($this), $objectsVisited, true)) {
+            // Prevent cycles.
+            return;
+        }
+        /** @var Element|Container $ingredient */
+        foreach ($this->ingredients as $ingredient) {
+            $hash = spl_object_hash($ingredient);
+            if (in_array($hash, $objectsVisited, true)) {
+                // Prevent cycles.
+                continue;
+            }
+            if ($ingredient instanceof Container) {
+                $objectsVisited[] = $hash;
+                $this->getInputFiltersInternal($objectsVisited, $inputFilters);
+            } else {
+                $inputFilters[$ingredient->getIonizerName()] = $ingredient->getFilter();
+            }
+        }
     }
 }

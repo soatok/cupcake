@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Core;
 
+use ParagonIE\Ionizer\Contract\FilterInterface;
+use ParagonIE\Ionizer\Filter\StringFilter;
 use ParagonIE\Ionizer\InputFilter;
 
 /**
@@ -15,19 +17,60 @@ abstract class Element implements IngredientInterface
     protected ?bool $autocomplete = null;
     protected bool $required = false;
     protected ?InputFilter $filter = null;
-    protected string $pattern;
+    protected string $pattern = '';
 
     /**
      * Ionizer input filter for the given input parameter.
      *
-     * @return InputFilter
+     * @return FilterInterface
      */
-    public function getFilter(): InputFilter
+    public function getFilter(): FilterInterface
     {
-        if (is_null($this->filter)) {
-            throw new \TypeError('Filter is not defined for this element');
+        if (!is_null($this->filter)) {
+            return $this->filter;
         }
-        return $this->filter;
+        if (!empty($this->pattern)) {
+            $filter = new StringFilter();
+            $filter->setPattern($this->pattern);
+            if ($this->required) {
+                $filter->addCallback([InputFilter::class, 'required']);
+            }
+            return $filter;
+        } elseif ($this->required) {
+            return (new InputFilter())
+                ->addCallback([InputFilter::class, 'required']);
+        }
+        return new InputFilter();
+    }
+
+    /**
+     * @param InputFilter $filter
+     * @return self
+     */
+    public function setFilter(InputFilter $filter): self
+    {
+        $this->filter = $filter;
+        return $this;
+    }
+
+    /**
+     * @param string $pattern
+     * @return self
+     */
+    public function setPattern(string $pattern): self
+    {
+        $this->pattern = $pattern;
+        return $this;
+    }
+
+    /**
+     * @param bool $required
+     * @return self
+     */
+    public function setRequired(bool $required): self
+    {
+        $this->required = $required;
+        return $this;
     }
 
     /**
