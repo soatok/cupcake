@@ -20,10 +20,11 @@ trait NameTrait
 
     /**
      * @param string $name
-     * @return void
+     * @return static
      */
-    public function setName(string $name): void
+    public function setName(string $name)
     {
         $this->name = $name;
+        return $this;
     }
 }
