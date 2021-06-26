@@ -20,10 +20,11 @@ trait ValueTrait
 
     /**
      * @param string $value
-     * @return void
+     * @return self
      */
-    public function setValue(string $value): void
+    public function setValue(string $value): self
     {
         $this->value = $value;
+        return $this;
     }
 }

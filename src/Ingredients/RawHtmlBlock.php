@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Ingredients;
 
+use Soatok\Cupcake\Core\Element;
+
 /**
  * Class RawHtmlBlock
  * @package Soatok\Cupcake\Ingredients
@@ -14,7 +16,7 @@ namespace Soatok\Cupcake\Ingredients;
  *
  * @link https://psalm.dev/docs/security_analysis
  */
-class RawHtmlBlock
+class RawHtmlBlock extends Element
 {
     protected string $contents;
 
@@ -22,7 +24,7 @@ class RawHtmlBlock
      * RawHtmlBlock constructor.
      * @param string $contents
      *
-     * @psalm-taint-sink $contents
+     * @psalm-taint-sink html $contents
      */
     public function __construct(string $contents)
     {

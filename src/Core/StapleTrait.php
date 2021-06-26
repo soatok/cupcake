@@ -19,10 +19,12 @@ trait StapleTrait
 
     /**
      * @param string $class
+     * @return self
      */
-    public function addClass(string $class): void
+    public function addClass(string $class): self
     {
         $this->classes []= $class;
+        return $this;
     }
 
     /**
@@ -112,11 +114,12 @@ trait StapleTrait
 
     /**
      * @param string $id
-     * @return void
+     * @return self
      */
-    public function setId(string $id): void
+    public function setId(string $id): self
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -136,11 +139,13 @@ trait StapleTrait
     /**
      * @param string $key
      * @param string $value
+     * @return self
      * @throws InvalidDataKeyException
      */
-    public function setData(string $key, string $value): void
+    public function setData(string $key, string $value): self
     {
         $this->data[Utilities::validateHtmlDataKey($key)] = $value;
+        return $this;
     }
 
     /**
