@@ -3,6 +3,7 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Blends;
 
 use Exception;
+use ParagonIE\Ionizer\Filter\AllowList;
 use Soatok\Cupcake\Core\Container;
 use Soatok\Cupcake\Core\NameTrait;
 use Soatok\Cupcake\Core\ValueTrait;
@@ -27,6 +28,29 @@ class RadioSet extends Container
     }
 
     /**
+     * A set of radio buttons should manifest an AllowList.
+     *
+     * @param array $objectsVisited
+     * @param array $inputFilters
+     */
+    protected function getInputFiltersInternal(
+        array &$objectsVisited,
+        array &$inputFilters
+    ): void {
+        if (in_array(spl_object_hash($this), $objectsVisited, true)) {
+            // Prevent cycles.
+            return;
+        }
+        $allowList = [];
+        /** @var Radio $ingredient */
+        foreach ($this->ingredients as $ingredient) {
+            $allowList []= $ingredient->getValue();
+        }
+        $inputFilters[$this->name] = new AllowList(...$allowList);
+        $objectsVisited []= spl_object_hash($this);
+    }
+
+    /**
      * Adds a new Radio and a new Label, and relates the two.
      *
      * @param string $value
@@ -36,12 +60,17 @@ class RadioSet extends Container
      * @return self
      * @throws Exception
      */
-    public function addRadio(string $value, string $label = '', ?string $id = null, bool $selected = false): self
-    {
+    public function addRadio(
+        string $value,
+        string $label = '',
+        ?string $id = null,
+        bool $selected = false
+    ): self {
         if (!$id) {
             $id = 'radio-' . bin2hex(random_bytes(8));
         }
         $radio = (new Radio($this->name))
+            ->setChecked($selected)
             ->setValue($value)
             ->setId($id);
         $label = new Label($label, $radio);

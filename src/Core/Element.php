@@ -3,7 +3,12 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Core;
 
 use ParagonIE\Ionizer\Contract\FilterInterface;
-use ParagonIE\Ionizer\Filter\StringFilter;
+use ParagonIE\Ionizer\Filter\{
+    BoolFilter,
+    FloatFilter,
+    IntFilter,
+    StringFilter,
+};
 use ParagonIE\Ionizer\InputFilter;
 
 /**
@@ -41,6 +46,29 @@ abstract class Element implements IngredientInterface
                 ->addCallback([InputFilter::class, 'required']);
         }
         return new InputFilter();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFilterType(): ?string
+    {
+        if (!$this->filter) {
+            return null;
+        }
+        if ($this->filter instanceof StringFilter) {
+            return 'string';
+        }
+        if ($this->filter instanceof BoolFilter) {
+            return 'bool';
+        }
+        if ($this->filter instanceof IntFilter) {
+            return 'int';
+        }
+        if ($this->filter instanceof FloatFilter) {
+            return 'float';
+        }
+        return 'mixed';
     }
 
     /**

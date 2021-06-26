@@ -2,10 +2,7 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake;
 
-use ParagonIE\Ionizer\InputFilterContainer;
-use ParagonIE\Ionizer\InvalidDataException;
 use Soatok\Cupcake\Core\Container;
-use Soatok\Cupcake\Exceptions\CupcakeException;
 
 /**
  * Class Form
@@ -67,23 +64,6 @@ class Form extends Container
     }
 
     /**
-     * @return InputFilterContainer
-     * @throws CupcakeException
-     */
-    public function getInputFilters(): InputFilterContainer
-    {
-        $visited = [];
-        $filters = [];
-        $this->getInputFiltersInternal($visited, $filters);
-
-        $container = new FilterContainer();
-        foreach ($filters as $name => $filter) {
-            $container->addFilter($name, $filter);
-        }
-        return $container;
-    }
-
-    /**
      * @return string
      */
     public function renderBefore(): string
@@ -100,18 +80,5 @@ class Form extends Container
     public function renderAfter(): string
     {
         return '</form>';
-    }
-
-    /**
-     * @param array $untrusted
-     * @return array
-     *
-     * @throws CupcakeException
-     * @throws InvalidDataException
-     */
-    public function getValidFormInput(array $untrusted): array
-    {
-        $if = $this->getInputFilters();
-        return $if($untrusted);
     }
 }

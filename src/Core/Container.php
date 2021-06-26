@@ -2,7 +2,10 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Core;
 
+use ParagonIE\Ionizer\InputFilterContainer;
+use ParagonIE\Ionizer\InvalidDataException;
 use Soatok\Cupcake\Exceptions\CupcakeException;
+use Soatok\Cupcake\FilterContainer;
 use Soatok\Cupcake\Ingredients\Input\File;
 
 /**
@@ -15,6 +18,8 @@ abstract class Container implements IngredientInterface
 
     /** @var IngredientInterface[] $ingredients */
     protected array $ingredients = [];
+    protected string $afterEach = '';
+    protected string $beforeEach = '';
 
     /**
      * @param IngredientInterface $ingredient
@@ -100,6 +105,22 @@ abstract class Container implements IngredientInterface
     }
 
     /**
+     * @return string
+     */
+    public function renderAfterEach(): string
+    {
+        return $this->afterEach;
+    }
+
+    /**
+     * @return string
+     */
+    public function renderBeforeEach(): string
+    {
+        return $this->beforeEach;
+    }
+
+    /**
      * Render all of the components as a flat string.
      *
      * @param array $objectsVisited
@@ -110,7 +131,9 @@ abstract class Container implements IngredientInterface
         $rendered = '';
         $components = $this->renderInternal($objectsVisited);
         foreach ($components as $component) {
+            $rendered .= $this->renderBeforeEach();
             $rendered .= $this->renderIngredient($component);
+            $rendered .= $this->renderAfterEach();
         }
         return implode('', [$this->renderBefore(), $rendered, $this->renderAfter()]);
     }
@@ -193,5 +216,55 @@ abstract class Container implements IngredientInterface
                 $inputFilters[$ingredient->getIonizerName()] = $ingredient->getFilter();
             }
         }
+    }
+
+    /**
+     * @param string $after
+     * @return static
+     */
+    public function setAfterEach(string $after): self
+    {
+        $this->afterEach = $after;
+        return $this;
+    }
+
+    /**
+     * @param string $before
+     * @return static
+     */
+    public function setBeforeEach(string $before): self
+    {
+        $this->beforeEach = $before;
+        return $this;
+    }
+
+    /**
+     * @return InputFilterContainer
+     * @throws CupcakeException
+     */
+    public function getInputFilters(): InputFilterContainer
+    {
+        $visited = [];
+        $filters = [];
+        $this->getInputFiltersInternal($visited, $filters);
+
+        $container = new FilterContainer();
+        foreach ($filters as $name => $filter) {
+            $container->addFilter($name, $filter);
+        }
+        return $container;
+    }
+
+    /**
+     * @param array $untrusted
+     * @return array
+     *
+     * @throws CupcakeException
+     * @throws InvalidDataException
+     */
+    public function getValidFormInput(array $untrusted): array
+    {
+        $if = $this->getInputFilters();
+        return $if($untrusted);
     }
 }

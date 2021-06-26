@@ -41,7 +41,7 @@ class RadioSetTest extends TestCase
                 '<label for="foo-1">Example</label>' .
             '<input id="foo-2" type="radio" name="foo" value="2" />' .
               '<label for="foo-2">Another One</label>' .
-            '<input id="foo-3" type="radio" name="foo" value="3" />' .
+            '<input id="foo-3" type="radio" name="foo" value="3" checked="checked" />' .
                 '<label for="foo-3">test</label>',
             (string) $rs,
             'Possible XSS Vulnerability?'
