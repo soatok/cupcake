@@ -27,7 +27,9 @@ class CheckboxWithLabel extends Container
                 $this->append($label);
             }
         } elseif ($label) {
-            throw new InvalidMixtureException('Labels cannot be provided if the checkbox is not');
+            throw new InvalidMixtureException(
+                'Labels cannot be provided if the checkbox is not'
+            );
         }
     }
 
@@ -70,9 +72,9 @@ class CheckboxWithLabel extends Container
     ): self {
         $self = new self();
         $checkbox = (new Checkbox($name))
-                ->setChecked($checked)
-                ->setValue($value)
-                ->setId($id);
+            ->setChecked($checked)
+            ->setValue($value)
+            ->setId($id);
         $self->append($checkbox)->append(new Label($label, $checkbox));
         return $self;
     }

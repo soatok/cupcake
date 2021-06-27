@@ -2,10 +2,13 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests;
 
+use ParagonIE\Ionizer\Filter\StringFilter;
+use ParagonIE\Ionizer\InvalidDataException;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Form;
 use Soatok\Cupcake\Ingredients\Fieldset;
 use Soatok\Cupcake\Ingredients\Input\File;
+use Soatok\Cupcake\Ingredients\InputTag;
 
 /**
  * Class FormTest
@@ -34,5 +37,31 @@ class FormTest extends TestCase
             $form->render(),
             'Adding a file input should set the enctype to multipart/form-data'
         );
+    }
+
+    protected function getTestForm()
+    {
+        $form = new Form();
+        $input = (new InputTag('test'))
+            ->setPattern('^[a-z]+$')
+            ->setRequired(true);
+        $form->append($input);
+        return $form;
+    }
+
+    public function testValidInput()
+    {
+        $form = $this->getTestForm();
+        $this->assertSame(
+            ['test' => 'abcdefg'],
+            $form->getValidFormInput(['test' => 'abcdefg'])
+        );
+    }
+
+    public function testInvalidInput()
+    {
+        $this->expectExceptionMessage('Pattern match failed (test).');
+        $form = $this->getTestForm();
+        $form->getValidFormInput(['test' => 'abc1234']);
     }
 }
