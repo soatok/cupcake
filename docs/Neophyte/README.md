@@ -11,3 +11,7 @@ the indecipherable hieroglyphs I call a blog post.
 ![Neophyte the Protogen](Happy.png)
 
 You can find their reference sheet here: [Twitter](https://twitter.com/SoatokDhole/status/1398414665055617026).
+
+Neophyte's stickers are [also available on Telegram](https://t.me/addstickers/Neophyte).
+
+Neophyte's reference sheet and stickers were created by [Harubaki](https://linktr.ee/Harubaki).
