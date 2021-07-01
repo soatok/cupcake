@@ -3,8 +3,8 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Ingredients;
 
 use Soatok\Cupcake\Core\Container;
+use Soatok\Cupcake\Core\DoesNotPopulateTrait;
 use Soatok\Cupcake\Core\NameTrait;
-use Soatok\Cupcake\Core\ValueTrait;
 
 /**
  * Class Datalist
@@ -12,7 +12,8 @@ use Soatok\Cupcake\Core\ValueTrait;
  */
 class Datalist extends Container
 {
-    use ValueTrait;
+    use DoesNotPopulateTrait, NameTrait;
+    protected string $value = '';
 
     /**
      * Datalist constructor.
@@ -76,5 +77,23 @@ class Datalist extends Container
             $middle .= sprintf('<option%s />', $ingredient->flattenAttributes());
         }
         return $this->renderBefore() . $middle . $this->renderAfter();
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param string $value
+     * @return static
+     */
+    public function setValue(string $value)
+    {
+        $this->value = $value;
+        return $this;
     }
 }

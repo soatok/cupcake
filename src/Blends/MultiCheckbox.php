@@ -12,7 +12,11 @@ use ParagonIE\Ionizer\Filter\{
 };
 use ParagonIE\Ionizer\InputFilter;
 use Soatok\Cupcake\Core\Container;
+use Soatok\Cupcake\Core\IngredientInterface;
 use Soatok\Cupcake\Core\NameTrait;
+use Soatok\Cupcake\Exceptions\CupcakeException;
+use Soatok\Cupcake\FilterContainer;
+use Soatok\Cupcake\Ingredients\Input\Checkbox;
 
 /**
  * Class MultiCheckbox
@@ -39,18 +43,20 @@ class MultiCheckbox extends Container
      * @param string $label
      * @param string $value
      * @param bool $checked
+     * @param ?string $id
      * @return self
      * @throws Exception
      */
     public function addCheckbox(
         string $label,
         string $value = '',
-        bool $checked = false
+        bool $checked = false,
+        ?string $id = null
     ): self {
         $this->append(CheckboxWithLabel::create(
             $this->name . '[]',
             $value,
-            'check-' . bin2hex(random_bytes(8)),
+            $id ?? 'check-' . bin2hex(random_bytes(8)),
             $label,
             $checked
         ));
@@ -138,5 +144,45 @@ class MultiCheckbox extends Container
             'string' => new StringArrayFilter(),
             default => new ArrayFilter(),
         };
+    }
+
+    /**
+     * @param array $untrusted
+     * @return IngredientInterface
+     * @throws CupcakeException
+     */
+    public function populateUserInput(array $untrusted): IngredientInterface
+    {
+        /** @var string[]|string[][] $pointer */
+        $pointer = &$untrusted;
+        $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
+        foreach ($pieces as $piece) {
+            if (!array_key_exists($piece, $pointer)) {
+                return $this->clearAllChecks();
+            }
+            /** @var string[]|string[][] $pointer */
+            $pointer = &$pointer[$piece];
+        }
+        /** @var string|string[] $pointer */
+        if (!is_array($pointer)) {
+            return $this->clearAllChecks();
+        }
+        /** @var Checkbox $ingredient */
+        foreach ($this->ingredients as $ingredient) {
+            $ingredient->setChecked(in_array($ingredient->getValue(), $pointer));
+        }
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    protected function clearAllChecks(): self
+    {
+        /** @var Checkbox $ingredient */
+        foreach ($this->ingredients as $ingredient) {
+            $ingredient->setChecked(false);
+        }
+        return $this;
     }
 }

@@ -49,6 +49,7 @@ class Utilities
     public static function escapeClasses(array $classes): string
     {
         $filtered = [];
+        /** @var string $class */
         foreach ($classes as $class) {
             if (preg_match('#-?[_a-zA-Z]+[_a-zA-Z0-9-]*#', trim($class))) {
                 $filtered []= $class;

@@ -3,8 +3,11 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Ingredients;
 
 use Soatok\Cupcake\Core\Element;
+use Soatok\Cupcake\Core\IngredientInterface;
 use Soatok\Cupcake\Core\NameTrait;
 use Soatok\Cupcake\Core\Utilities;
+use Soatok\Cupcake\Exceptions\CupcakeException;
+use Soatok\Cupcake\FilterContainer;
 
 /**
  * Class Textarea
@@ -38,5 +41,30 @@ class Textarea extends Element
             $this->flattenAttributes(),
             Utilities::escapeAttribute($this->contents)
         );
+    }
+
+    /**
+     * @param array $untrusted
+     * @return IngredientInterface
+     * @throws CupcakeException
+     */
+    public function populateUserInput(array $untrusted): IngredientInterface
+    {
+        /** @var string[]|string[][] $pointer */
+        $pointer = &$untrusted;
+        $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
+        foreach ($pieces as $piece) {
+            if (!array_key_exists($piece, $pointer)) {
+                return $this;
+            }
+            /** @var string[]|string[][] $pointer */
+            $pointer = &$pointer[$piece];
+        }
+        /** @var string|string[] $pointer */
+        if (is_array($pointer)) {
+            return $this;
+        }
+        $this->contents = $pointer;
+        return $this;
     }
 }

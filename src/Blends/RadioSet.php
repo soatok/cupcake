@@ -5,8 +5,11 @@ namespace Soatok\Cupcake\Blends;
 use Exception;
 use ParagonIE\Ionizer\Filter\AllowList;
 use Soatok\Cupcake\Core\Container;
+use Soatok\Cupcake\Core\IngredientInterface;
 use Soatok\Cupcake\Core\NameTrait;
 use Soatok\Cupcake\Core\ValueTrait;
+use Soatok\Cupcake\Exceptions\CupcakeException;
+use Soatok\Cupcake\FilterContainer;
 use Soatok\Cupcake\Ingredients\Input\Radio;
 use Soatok\Cupcake\Ingredients\Label;
 
@@ -75,6 +78,55 @@ class RadioSet extends Container
             ->setId($id);
         $label = new Label($label, $radio);
         $this->append($radio)->append($label);
+        return $this;
+    }
+
+    /**
+     * @param array $untrusted
+     * @return IngredientInterface
+     * @throws CupcakeException
+     */
+    public function populateUserInput(array $untrusted): IngredientInterface
+    {
+        $this->clearAllChecks();
+        /** @var string[]|string[][] $pointer */
+        $pointer = &$untrusted;
+        $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
+        foreach ($pieces as $piece) {
+            if (!array_key_exists($piece, $pointer)) {
+                return $this;
+            }
+            /** @var string[]|string[][] $pointer */
+            $pointer = &$pointer[$piece];
+        }
+        /** @var string|string[] $pointer */
+        if (is_array($pointer)) {
+            return $this;
+        }
+        /** @var Radio|Label $ingredient */
+        foreach ($this->ingredients as $ingredient) {
+            if ($ingredient instanceof Label) {
+                continue;
+            }
+            if ($ingredient->getValue() === $pointer) {
+                $ingredient->setChecked(true);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return self
+     */
+    protected function clearAllChecks(): self
+    {
+        /** @var Radio|Label $ingredient */
+        foreach ($this->ingredients as $ingredient) {
+            if ($ingredient instanceof Label) {
+                continue;
+            }
+            $ingredient->setChecked(false);
+        }
         return $this;
     }
 }
