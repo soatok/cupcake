@@ -4,6 +4,7 @@ namespace Soatok\Cupcake\Core;
 
 use HTMLPurifier;
 use Soatok\Cupcake\Exceptions\InvalidDataKeyException;
+use Soatok\Cupcake\Security\AntiCSRF\CookieBacked;
 
 /**
  * Class Utilities
@@ -13,13 +14,17 @@ class Utilities
 {
     private static ?Utilities $instance = null;
     private HTMLPurifier $purifier;
+    private AntiCSRFInterface $antiCSRF;
 
     /**
      * Utilities constructor.
+     *
      * @param HTMLPurifier|null $purifier
+     * @param AntiCSRFInterface|null $antiCSRF
      */
     private function __construct(
-        ?HTMLPurifier $purifier = null
+        ?HTMLPurifier $purifier = null,
+        ?AntiCSRFInterface $antiCSRF = null,
     ) {
         if (!is_null($purifier)) {
             $this->purifier = $purifier;
@@ -27,6 +32,19 @@ class Utilities
             $config = \HTMLPurifier_Config::createDefault();
             $this->purifier = new HTMLPurifier($config);
         }
+        if (!is_null($antiCSRF)) {
+            $this->antiCSRF = $antiCSRF;
+        } else {
+            $this->antiCSRF = new CookieBacked();
+        }
+    }
+
+    /**
+     * @return AntiCSRFInterface
+     */
+    public static function defaultAntiCSRF(): AntiCSRFInterface
+    {
+        return self::getInstance()->antiCSRF;
     }
 
     /**
@@ -65,12 +83,14 @@ class Utilities
      * @return self
      */
     public static function getInstance(
-        ?HTMLPurifier $purifier = null
+        ?HTMLPurifier $purifier = null,
+        ?AntiCSRFInterface $antiCSRF = null
     ): self {
         if (is_null(self::$instance)) {
             // This is the only time we pass parameters
             self::$instance = new Utilities(
-                $purifier
+                $purifier,
+                $antiCSRF
             );
         }
         // We don't pass parameters if this has already been instantiated.
@@ -110,5 +130,18 @@ class Utilities
             throw new InvalidDataKeyException('data-* attributes cannot contain capital letters');
         }
         return $key;
+    }
+
+    /**
+     * Swap out the default Anti-CSRF class at runtime.
+     *
+     * @param AntiCSRFInterface $default
+     * @return self
+     */
+    public static function setDefaultAntiCSRF(AntiCSRFInterface $default): self
+    {
+        $instance = self::getInstance();
+        $instance->antiCSRF = $default;
+        return $instance;
     }
 }

@@ -18,6 +18,7 @@ class InputWithDatalistTest extends TestCase
     public function testInputWithDatalist()
     {
         $form = new Form();
+        $form->disableAntiCSRF();
         $datalist = new Datalist('test-data');
         $input = (new InputTag('test'))->setList($datalist);
         $form->append($input)->append($datalist);

@@ -10,6 +10,7 @@ use Soatok\Cupcake\Ingredients\Fieldset;
 use Soatok\Cupcake\Ingredients\Input\File;
 use Soatok\Cupcake\Ingredients\Input\Text;
 use Soatok\Cupcake\Ingredients\InputTag;
+use Soatok\Cupcake\Tests\Security\AntiCSRF\CookieBackedDummy;
 
 /**
  * Class FormTest
@@ -28,9 +29,39 @@ class FormTest extends TestCase
         $this->idPrefix = bin2hex(random_bytes(32));
     }
 
+    public function testEmpty()
+    {
+        $form = (new Form())->disableAntiCSRF();
+        $this->assertSame(
+            '<form method="GET" action=""></form>',
+            $form . ''
+        );
+    }
+    public function testEmptyWithoutDisablingCsrfProtection()
+    {
+        /** @var array<string, string> $storage */
+        $storage = [];
+        $cookie = new CookieBackedDummy('cupcake-csrf', 'cupcake-csrf', $storage);
+        // Coerce it to write
+        $cookie->getHiddenElement();
+
+        $form = new Form();
+        $form->setAntiCSRF($cookie);
+
+        /** @var string $token */
+        /** @psalm-suppress PossiblyNullArrayAccess */
+        $token = $storage['cupcake-csrf'];
+        $this->assertSame(
+            '<form method="GET" action="">' .
+                '<input type="hidden" name="anti-csrf" value="' . $token . '" />' .
+            '</form>',
+            $form . ''
+        );
+    }
+
     public function testFileBehavior()
     {
-        $form = new Form();
+        $form = (new Form())->disableAntiCSRF();
         $this->assertFalse($form->hasFileInput(), 'No file input is detected by default');
         $this->assertStringNotContainsString(
             'enctype="multipart/form-data"',
@@ -53,6 +84,7 @@ class FormTest extends TestCase
     protected function getTestForm()
     {
         $form = new Form();
+        $form->disableAntiCSRF();
         $input = (new InputTag('test'))
             ->setPattern('^[a-z]+$')
             ->setRequired(true);
@@ -82,7 +114,7 @@ class FormTest extends TestCase
     public function testPopulateInput()
     {
         $this->assertSame(
-            '<form method="GET" action="">' . 
+            '<form method="GET" action="">' .
                 '<input type="text" name="foo" value="dhole" />' .
                 '<input id="' . $this->idPrefix . '-1" type="checkbox" name="bar&lbrack;&rsqb;" value="1" />' .
                     '<label for="' . $this->idPrefix . '-1">test 1</label>' .
@@ -114,6 +146,7 @@ class FormTest extends TestCase
     protected function exampleForm(): Form
     {
         $form = new Form();
+        $form->disableAntiCSRF();
         $form->append(new Text('foo'));
         $form->append(
             (new MultiCheckbox('bar'))
