@@ -131,4 +131,17 @@ class Utilities
         }
         return $key;
     }
+
+    /**
+     * Swap out the default Anti-CSRF class at runtime.
+     *
+     * @param AntiCSRFInterface $default
+     * @return self
+     */
+    public static function setDefaultAntiCSRF(AntiCSRFInterface $default): self
+    {
+        $instance = self::getInstance();
+        $instance->antiCSRF = $default;
+        return $instance;
+    }
 }
