@@ -22,6 +22,11 @@
     "vimeo/psalm": "^4"
   },
   "scripts": {
+    "local": [
+      "phpunit",
+      "psalm --clear-cache", "psalm --show-info=true",
+      "psalm --clear-cache", "psalm --taint-analysis"
+    ],
     "static-analysis": ["psalm"],
     "taint": ["psalm --taint-analysis"],
     "test": ["phpunit", "psalm", "psalm --taint-analysis"],

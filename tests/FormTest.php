@@ -2,12 +2,13 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests;
 
-use ParagonIE\Ionizer\Filter\StringFilter;
-use ParagonIE\Ionizer\InvalidDataException;
 use PHPUnit\Framework\TestCase;
+use Soatok\Cupcake\Blends\MultiCheckbox;
+use Soatok\Cupcake\Blends\RadioSet;
 use Soatok\Cupcake\Form;
 use Soatok\Cupcake\Ingredients\Fieldset;
 use Soatok\Cupcake\Ingredients\Input\File;
+use Soatok\Cupcake\Ingredients\Input\Text;
 use Soatok\Cupcake\Ingredients\InputTag;
 
 /**
@@ -17,6 +18,16 @@ use Soatok\Cupcake\Ingredients\InputTag;
  */
 class FormTest extends TestCase
 {
+    protected string $idPrefix = '';
+
+    /**
+     * @throws \Exception
+     */
+    public function setUp(): void
+    {
+        $this->idPrefix = bin2hex(random_bytes(32));
+    }
+
     public function testFileBehavior()
     {
         $form = new Form();
@@ -63,5 +74,60 @@ class FormTest extends TestCase
         $this->expectExceptionMessage('Pattern match failed (test).');
         $form = $this->getTestForm();
         $form->getValidFormInput(['test' => 'abc1234']);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testPopulateInput()
+    {
+        $this->assertSame(
+            '<form method="GET" action="">' . 
+                '<input type="text" name="foo" value="dhole" />' .
+                '<input id="' . $this->idPrefix . '-1" type="checkbox" name="bar&lbrack;&rsqb;" value="1" />' .
+                    '<label for="' . $this->idPrefix . '-1">test 1</label>' .
+                '<input id="' . $this->idPrefix . '-2" type="checkbox" name="bar&lbrack;&rsqb;" value="2" />' .
+                    '<label for="' . $this->idPrefix . '-2">test 2</label>' .
+                '<input id="' . $this->idPrefix . '-3" type="checkbox" name="bar&lbrack;&rsqb;" value="3" checked="checked" />' .
+                    '<label for="' . $this->idPrefix . '-3">test 3</label>' .
+                '<input id="' . $this->idPrefix . '-apple" type="checkbox" name="bar&lbrack;&rsqb;" value="apple" checked="checked" />' .
+                    '<label for="' . $this->idPrefix . '-apple">test 4</label>' .
+                '<input id="' . $this->idPrefix . '-4" type="radio" name="baz" value="4" />' .
+                    '<label for="' . $this->idPrefix . '-4">test 4</label>' .
+                '<input id="' . $this->idPrefix . '-5" type="radio" name="baz" value="5" />' .
+                    '<label for="' . $this->idPrefix . '-5">test 5</label>' .
+                '<input id="' . $this->idPrefix . '-6" type="radio" name="baz" value="6" checked="checked" />' .
+                    '<label for="' . $this->idPrefix . '-6">test 6</label>' .
+            '</form>',
+            $this->exampleForm()->populateUserInput([
+                'foo' => 'dhole',
+                'bar' => ['3', 'apple'],
+                'baz' => '6',
+            ]) . ''
+        );
+    }
+
+    /**
+     * @return Form
+     * @throws \Exception
+     */
+    protected function exampleForm(): Form
+    {
+        $form = new Form();
+        $form->append(new Text('foo'));
+        $form->append(
+            (new MultiCheckbox('bar'))
+                ->addCheckbox('test 1', '1', false, $this->idPrefix . '-1')
+                ->addCheckbox('test 2', '2', true, $this->idPrefix . '-2')
+                ->addCheckbox('test 3', '3', false, $this->idPrefix . '-3')
+                ->addCheckbox('test 4', 'apple', false, $this->idPrefix . '-apple')
+        );
+        $form->append(
+            (new RadioSet('baz'))
+                ->addRadio('4', 'test 4', $this->idPrefix . '-4', true)
+                ->addRadio('5', 'test 5', $this->idPrefix . '-5')
+                ->addRadio('6', 'test 6', $this->idPrefix . '-6')
+        );
+        return $form;
     }
 }

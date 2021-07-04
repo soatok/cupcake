@@ -2,11 +2,16 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Core;
 
-use ParagonIE\Ionizer\InputFilterContainer;
-use ParagonIE\Ionizer\InvalidDataException;
-use Soatok\Cupcake\Exceptions\CupcakeException;
+use ParagonIE\Ionizer\{InputFilter, InputFilterContainer, InvalidDataException};
+use Soatok\Cupcake\Exceptions\{
+    ChildNotFoundException,
+    CupcakeException
+};
 use Soatok\Cupcake\FilterContainer;
-use Soatok\Cupcake\Ingredients\Input\File;
+use Soatok\Cupcake\Ingredients\{
+    Input\File,
+    Label
+};
 
 /**
  * Class Container
@@ -28,6 +33,16 @@ abstract class Container implements IngredientInterface
     public function append(IngredientInterface $ingredient): self
     {
         $this->ingredients[] = $ingredient;
+        return $this;
+    }
+
+    /**
+     * @param IngredientInterface $ingredient
+     * @return self
+     */
+    public function prepend(IngredientInterface $ingredient): self
+    {
+        array_unshift($this->ingredients, $ingredient);
         return $this;
     }
 
@@ -100,6 +115,7 @@ abstract class Container implements IngredientInterface
      */
     public function render(): string
     {
+        /** @var string[] $objectsVisited */
         $objectsVisited = [];
         return $this->renderComponents($objectsVisited);
     }
@@ -123,13 +139,15 @@ abstract class Container implements IngredientInterface
     /**
      * Render all of the components as a flat string.
      *
-     * @param array $objectsVisited
+     * @param string[] &$objectsVisited
+     * @param-out string[] &$objectsVisited
      * @return string
      */
     protected function renderComponents(array &$objectsVisited): string
     {
         $rendered = '';
         $components = $this->renderInternal($objectsVisited);
+        /** @var string $component */
         foreach ($components as $component) {
             $rendered .= $this->renderBeforeEach();
             $rendered .= $this->renderIngredient($component);
@@ -141,8 +159,9 @@ abstract class Container implements IngredientInterface
     /**
      * Recursively walk down all other Containers and render the whole shebang.
      *
-     * @param array $objectsVisited
+     * @param string[] &$objectsVisited
      * @return array
+     * @param-out string[] &$objectsVisited
      */
     protected function renderInternal(array &$objectsVisited): array
     {
@@ -150,6 +169,9 @@ abstract class Container implements IngredientInterface
             // Prevent cycles.
             return [];
         }
+        /** @var string[] $objectsVisited */
+        $objectsVisited[] = spl_object_hash($this);
+        /** @var string[] $pieces */
         $pieces = [];
         foreach ($this->ingredients as $ingredient) {
             $hash = spl_object_hash($ingredient);
@@ -157,6 +179,7 @@ abstract class Container implements IngredientInterface
                 // Prevent cycles.
                 continue;
             }
+            // The order of when we append $hash to $objectsVisited matters:
             if ($ingredient instanceof Container) {
                 $piece = $ingredient->renderComponents($objectsVisited);
                 $objectsVisited[] = $hash;
@@ -166,7 +189,6 @@ abstract class Container implements IngredientInterface
             }
             $pieces[] = $this->renderIngredient($piece);
         }
-        $objectsVisited[] = spl_object_hash($this);
         return $pieces;
     }
 
@@ -190,8 +212,8 @@ abstract class Container implements IngredientInterface
     }
 
     /**
-     * @param array $objectsVisited
-     * @param array $inputFilters
+     * @param string[] &$objectsVisited
+     * @param array<string, InputFilter> $inputFilters
      * @throws CupcakeException
      */
     protected function getInputFiltersInternal(
@@ -211,9 +233,12 @@ abstract class Container implements IngredientInterface
             }
             if ($ingredient instanceof Container) {
                 $objectsVisited[] = $hash;
-                $this->getInputFiltersInternal($objectsVisited, $inputFilters);
+                $ingredient->getInputFiltersInternal($objectsVisited, $inputFilters);
             } else {
-                $inputFilters[$ingredient->getIonizerName()] = $ingredient->getFilter();
+                $filter = $ingredient->getFilter();
+                if ($filter instanceof InputFilter) {
+                    $inputFilters[$ingredient->getIonizerName()] = $filter;
+                }
             }
         }
     }
@@ -244,11 +269,17 @@ abstract class Container implements IngredientInterface
      */
     public function getInputFilters(): InputFilterContainer
     {
+        /** @var string[] $visited */
         $visited = [];
+        /** @var array<string, InputFilter> $filters */
         $filters = [];
         $this->getInputFiltersInternal($visited, $filters);
 
         $container = new FilterContainer();
+        /**
+         * @var string $name
+         * @var InputFilter $filter
+         */
         foreach ($filters as $name => $filter) {
             $container->addFilter($name, $filter);
         }
@@ -266,5 +297,131 @@ abstract class Container implements IngredientInterface
     {
         $if = $this->getInputFilters();
         return $if($untrusted);
+    }
+
+    /**
+     * @param string $contents
+     * @return static
+     *
+     * @throws CupcakeException
+     */
+    public function createAndAppendLabel(string $contents): self
+    {
+        $index = $this->getLastElementIndex();
+        /** @var Element|Container $ingredient */
+        $ingredient = $this->ingredients[$index];
+        $label = new Label($contents, $ingredient);
+        $this->append($label);
+        return $this;
+    }
+
+    /**
+     * @param string $contents
+     * @return static
+     *
+     * @throws CupcakeException
+     */
+    public function createAndPrependLabel(string $contents): self
+    {
+        // Get the correct index for the most recent element.
+        $index = $this->getLastElementIndex();
+        /** @var Element|Container|null $ingredient */
+        $ingredient = $this->ingredients[$index];
+        $label = new Label($contents, $ingredient);
+
+        // Merge in the label _before_ the ingredient.
+        $before = array_slice($this->ingredients, 0, $index);
+        $after = array_slice($this->ingredients, $index);
+        /** @var array<array-key, IngredientInterface> $merged */
+        $merged = array_merge(
+            $before,
+            [$label, $ingredient],
+            $after
+        );
+        $this->ingredients = $merged;
+        return $this;
+    }
+
+    /**
+     * Return an element by its ID. Optionally search all child containers.
+     *
+     * @param string $id
+     * @param bool $recursive
+     * @return IngredientInterface
+     * @throws ChildNotFoundException
+     */
+    public function getChildById(string $id, bool $recursive = false): IngredientInterface
+    {
+        // Search the top level first.
+        foreach ($this->ingredients as $ingredient) {
+            if (!($ingredient instanceof Element)) {
+                continue;
+            }
+            if ($ingredient->getId() === $id) {
+                return $ingredient;
+            }
+        }
+
+        // Now let's do a recursive search, if selected:
+        if ($recursive) {
+            foreach ($this->ingredients as $ingredient) {
+                if (!($ingredient instanceof Container)) {
+                    continue;
+                }
+                /** @var Container $ingredient */
+                return $ingredient->getChildById($id, true);
+            }
+        }
+        throw new ChildNotFoundException(
+            'No child element of this container found with id = ' . $id
+        );
+    }
+
+    /**
+     * @return int
+     * @throws CupcakeException
+     */
+    protected function getLastElementIndex(): int
+    {
+        /** @var int[] $keys */
+        $keys = array_keys($this->ingredients);
+        // Get the correct index for the most recent element.
+        do {
+            if (empty($keys)) {
+                throw new CupcakeException('No elements found in this container');
+            }
+            /** @var int $index */
+            $index = array_pop($keys);
+        } while (!($this->ingredients[$index] instanceof Element));
+        return $index;
+    }
+
+    /**
+     * @param string $id
+     * @return int
+     * @throws ChildNotFoundException
+     */
+    protected function getChildIndexById(string $id): int
+    {
+        foreach ($this->ingredients as $index => $ingredient) {
+            if ($ingredient->getId() === $id) {
+                return $index;
+            }
+        }
+        throw new ChildNotFoundException(
+            'No child element of this container found with id = ' . $id
+        );
+    }
+
+    /**
+     * @param array $untrusted
+     * @return IngredientInterface
+     */
+    public function populateUserInput(array $untrusted): IngredientInterface
+    {
+        foreach ($this->ingredients as $ingredient) {
+            $ingredient->populateUserInput($untrusted);
+        }
+        return $this;
     }
 }

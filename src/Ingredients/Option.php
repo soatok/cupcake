@@ -2,10 +2,11 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Ingredients;
 
-use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Pure;
 use Soatok\Cupcake\Core\Element;
+use Soatok\Cupcake\Core\IngredientInterface;
 use Soatok\Cupcake\Core\Utilities;
+use Soatok\Cupcake\Exceptions\CupcakeException;
+use Soatok\Cupcake\FilterContainer;
 
 /**
  * Class Option
@@ -52,6 +53,32 @@ class Option extends Element
             return $value ? 'selected' : '';
         }
         return parent::boolPropertyValue($name, $value);
+    }
+
+    /**
+     * @param array $untrusted
+     * @return IngredientInterface
+     * @throws CupcakeException
+     */
+    public function populateUserInput(array $untrusted): IngredientInterface
+    {
+        /** @var string[]|string[][] $pointer */
+        $pointer = &$untrusted;
+        $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
+        foreach ($pieces as $piece) {
+            if (!array_key_exists($piece, $pointer)) {
+                $this->selected = false;
+                return $this;
+            }
+            /** @var string[]|string[][] $pointer */
+            $pointer = &$pointer[$piece];
+        }
+        /** @var string|string[] $pointer */
+        if (is_array($pointer)) {
+            return $this;
+        }
+        $this->selected = $pointer === $this->value;
+        return $this;
     }
 
     /**

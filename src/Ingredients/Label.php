@@ -3,8 +3,8 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Ingredients;
 
 use Soatok\Cupcake\Core\Container;
+use Soatok\Cupcake\Core\DoesNotPopulateTrait;
 use Soatok\Cupcake\Core\Element;
-use Soatok\Cupcake\Core\IngredientInterface;
 use Soatok\Cupcake\Core\Utilities;
 
 /**
@@ -13,6 +13,7 @@ use Soatok\Cupcake\Core\Utilities;
  */
 class Label extends Element
 {
+    use DoesNotPopulateTrait;
     protected string $contents;
     protected Element|Container|null $for = null;
 

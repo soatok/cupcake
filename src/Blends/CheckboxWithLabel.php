@@ -78,4 +78,30 @@ class CheckboxWithLabel extends Container
         $self->append($checkbox)->append(new Label($label, $checkbox));
         return $self;
     }
+
+    /**
+     * @param bool $value
+     * @return self
+     */
+    public function setChecked(bool $value): self
+    {
+        $cb = $this->getCheckbox();
+        if (!$cb) {
+            return $this;
+        }
+        $cb->setChecked($value);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue(): string
+    {
+        $cb = $this->getCheckbox();
+        if (!$cb) {
+            return '';
+        }
+        return $cb->getValue();
+    }
 }

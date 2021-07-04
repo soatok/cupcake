@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Ingredients;
 
+use Soatok\Cupcake\Core\DoesNotPopulateTrait;
 use Soatok\Cupcake\Core\Element;
 
 /**
@@ -18,6 +19,7 @@ use Soatok\Cupcake\Core\Element;
  */
 class RawHtmlBlock extends Element
 {
+    use DoesNotPopulateTrait;
     protected string $contents;
 
     /**
@@ -29,6 +31,16 @@ class RawHtmlBlock extends Element
     public function __construct(string $contents)
     {
         $this->contents = $contents;
+    }
+
+    /**
+     * @param string $contents
+     * @return self
+     */
+    public function setContents(string $contents): self
+    {
+        $this->contents = $contents;
+        return $this;
     }
 
     /**

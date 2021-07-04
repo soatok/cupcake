@@ -11,13 +11,6 @@ use ParagonIE\Ionizer\InputFilter;
 interface IngredientInterface
 {
     /**
-     * Return the HTML to display to the end user.
-     *
-     * @return string
-     */
-    public function render(): string;
-
-    /**
      * Returns a map where:
      *
      * - key   -> key to include in flattenAttributes()
@@ -28,9 +21,33 @@ interface IngredientInterface
     public function customAttributes(): array;
 
     /**
+     * @return string
+     */
+    public function getId(): string;
+
+    /**
+     * Return the HTML to display to the end user.
+     *
+     * @return string
+     */
+    public function render(): string;
+
+    /**
+     * @param string $id
+     * @return self
+     */
+    public function setId(string $id): self;
+
+    /**
      * Direct key-value pair to include in output
      *
      * @return array<string, string>
      */
     public function renderAttributes(): array;
+
+    /**
+     * @param array $untrusted
+     * @return IngredientInterface
+     */
+    public function populateUserInput(array $untrusted): IngredientInterface;
 }

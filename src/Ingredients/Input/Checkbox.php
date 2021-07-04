@@ -2,7 +2,10 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Ingredients\Input;
 
+use Soatok\Cupcake\Core\IngredientInterface;
 use Soatok\Cupcake\Core\ValueTrait;
+use Soatok\Cupcake\Exceptions\CupcakeException;
+use Soatok\Cupcake\FilterContainer;
 use Soatok\Cupcake\Ingredients\InputTag;
 
 /**
@@ -50,6 +53,33 @@ class Checkbox extends InputTag
             return $value ? 'checked' : '';
         }
         return parent::boolPropertyValue($name, $value);
+    }
+
+    /**
+     * @param array $untrusted
+     * @return IngredientInterface
+     * @throws CupcakeException
+     */
+    public function populateUserInput(array $untrusted): IngredientInterface
+    {
+        /** @var string[]|string[][] $pointer */
+        $pointer = &$untrusted;
+        $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
+        foreach ($pieces as $piece) {
+            if (!array_key_exists($piece, $pointer)) {
+                $this->checked = false;
+                return $this;
+            }
+            /** @var string[]|string[][] $pointer */
+            $pointer = &$pointer[$piece];
+        }
+        /** @var string|string[] $pointer */
+        if (is_array($pointer)) {
+            $this->checked = false;
+            return $this;
+        }
+        $this->checked = $pointer === $this->value;
+        return $this;
     }
 
     /**

@@ -11,7 +11,7 @@ use Soatok\Cupcake\FilterContainer;
  */
 trait NameTrait
 {
-    protected string $name;
+    protected string $name = '';
 
     /**
      * @return string

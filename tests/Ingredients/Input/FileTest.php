@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace Soatok\Cupcake\Tests\Ingredients;
+namespace Soatok\Cupcake\Tests\Ingredients\Input;
 
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Ingredients\Input\File;
