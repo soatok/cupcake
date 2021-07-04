@@ -15,19 +15,33 @@ class Button extends Element
 {
     use DoesNotPopulateTrait, NameTrait;
     protected string $label;
+    protected string $type;
 
-    public function __construct(string $name = '', string $label = '')
+    public function __construct(string $name = '', string $label = '', string $type = '')
     {
         $this->name = $name;
         $this->label = $label;
+        $this->type = $type;
     }
 
     /**
      * @param string $label
+     * @return self
      */
-    public function setLabel(string $label): void
+    public function setLabel(string $label): self
     {
         $this->label = $label;
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+        return $this;
     }
 
     public function customAttributes(): array
@@ -35,6 +49,9 @@ class Button extends Element
         $attributes = [];
         if (!empty($this->name)) {
             $attributes['name'] = null;
+        }
+        if (!empty($this->type)) {
+            $attributes['type'] = null;
         }
         return $attributes;
     }

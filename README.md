@@ -1,4 +1,4 @@
-# Cupcake
+# ![Cupcake](docs/headers/cupcake.png)
 
 [![Build Status](https://github.com/soatok/cupcake/actions/workflows/ci.yml/badge.svg)](https://github.com/soatok/cupcake/actions)
 [![Latest Stable Version](https://poser.pugx.org/soatok/cupcake/v/stable)](https://packagist.org/packages/soatok/cupcake)
@@ -8,8 +8,6 @@
 Sweet and fast form processing for PHP projects.
 
 **Requires PHP 8 or newer.**
-
-![Cupcake](docs/Neophyte/Cupcake.png)
 
 ## Installation
 

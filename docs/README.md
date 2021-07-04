@@ -1,10 +1,12 @@
-# Cupcake - Documentation
+# ![Cupcake - Documentation](headers/documentation.png)
 
 The primary goal of Cupcake is to make form generation and
 secure data processing easy, without any framework-specific
 dependencies.
 
-Here's two snippets of code that will instantiate a web form,
+## Quick Example
+
+Here are two snippets of code that will instantiate a web form,
 process the request (if it exists), and display it again with
 the user-provided data if there was an error.
 
@@ -51,12 +53,15 @@ $form = (new Form())
             'Remember me on this computer?'
         )
     );
+    // This is optional; by default, it includes at the time
+    // of form rendering. This can cause issues with the Cookie-backed
+    // Anti-CSRF implementation. Custom implementations may be unaffected.
+    $form->finalizeCsrfElement();
 
 return $form;
 ```
 
 The above snippet instantiates and returns a Form object.
-If 
 
 ```php
 <?php
@@ -65,9 +70,15 @@ use ParagonIE\Ionizer\InvalidDataException;
 use Soatok\Cupcake\Blends\DivWithPurifiedHtml;
 use Soatok\Cupcake\Form;
 
-/** 
+/**
  * @var callable $callback (user-defined)
  * @var Form $form (see previous snippet)
+ * 
+ * If you want, copy the definition of $form from the previous snippet
+ * to the current snippet, right below this docblock. Or you can just
+ * do this:
+ *
+ * $form = require "other-snippet.php";
  */
 
 // Next, let's process data:
@@ -92,3 +103,31 @@ echo '<!DOCCTYPE html><html><body>';
 echo $form;
 echo '</body></html>';
 ```
+
+When the user fills out the form, if their input passes validation,
+the validated (and type-conforming) input will be passed to `$callback`.
+
+If the form fails validation, the form will be displayed again.
+
+## Tenets of Cupcake
+
+![Neophyte delighted](Neophyte/Happy.png)
+
+1. **Security is the highest priority.**
+    * It MUST be harder to use this library insecurely than securely.
+    * The defaults MUST be reasonable and secure.
+1. **Easy-to-use or bust.**
+    * If a neophyte cannot figure it out, the design is wrong.
+    * The Principle of Least Astonishment is our guiding principle.
+    * If something seems confusing or surprising, it needs to be corrected.
+1. **Extensibility.**
+    * It must be easy for a developer to extend Cupcake in their own projects.
+1. **Minimal dependencies.**
+    * Cupcake MUST not depend on a bloated web framework.
+    * (But it should be easy to integrate with an existing framework. See also:
+      Extensibility.)
+
+## Contents
+
+1. [Introduction to Cupcake](01-Intro.md)
+1. 
