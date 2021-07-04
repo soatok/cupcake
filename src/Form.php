@@ -2,7 +2,10 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake;
 
+use Soatok\Cupcake\Core\AntiCSRFInterface;
 use Soatok\Cupcake\Core\Container;
+use Soatok\Cupcake\Core\Utilities;
+use Soatok\Cupcake\Exceptions\CupcakeException;
 
 /**
  * Class Form
@@ -10,9 +13,11 @@ use Soatok\Cupcake\Core\Container;
  */
 class Form extends Container
 {
+    protected bool $antiCSRFdisabled = false;
     protected string $method = 'GET';
     protected string $action = '';
     protected string $enctype = '';
+    protected ?AntiCSRFInterface $antiCSRF = null;
 
     public function getAction(): string
     {
@@ -22,6 +27,44 @@ class Form extends Container
     public function getMethod(): string
     {
         return $this->method;
+    }
+
+    public function disableAntiCSRF(): self
+    {
+        $this->antiCSRFdisabled = true;
+        return $this;
+    }
+
+    public function enableAntiCSRF(): self
+    {
+        $this->antiCSRFdisabled = false;
+        return $this;
+    }
+
+    /**
+     * @param bool $ignoreDefault
+     * @return AntiCSRFInterface
+     * @throws CupcakeException
+     */
+    public function getAntiCSRF(bool $ignoreDefault = false): AntiCSRFInterface
+    {
+        if (is_null($this->antiCSRF)) {
+            if ($ignoreDefault) {
+                throw new CupcakeException('No Anti-CSRF class configured.');
+            }
+            return Utilities::defaultAntiCSRF();
+        }
+        return $this->antiCSRF;
+    }
+
+    /**
+     * @param AntiCSRFInterface $antiCSRF
+     * @return self
+     */
+    public function setAntiCSRF(AntiCSRFInterface $antiCSRF): self
+    {
+        $this->antiCSRF = $antiCSRF;
+        return $this;
     }
 
     public function setAction(string $action): self
@@ -80,5 +123,20 @@ class Form extends Container
     public function renderAfter(): string
     {
         return '</form>';
+    }
+
+    /**
+     * @return string
+     * @throws CupcakeException
+     */
+    public function render(): string
+    {
+        if (!$this->antiCSRFdisabled) {
+            if (!$this->elementExistsWithName($this->getAntiCSRF()->getFormName())) {
+                // We need to inject this.
+                $this->append($this->getAntiCSRF()->getHiddenElement());
+            }
+        }
+        return parent::render();
     }
 }

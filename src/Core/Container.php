@@ -424,4 +424,25 @@ abstract class Container implements IngredientInterface
         }
         return $this;
     }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function elementExistsWithName(string $name): bool
+    {
+        // Check all top-level elements
+        foreach ($this->ingredients as $ingredient) {
+            if ($ingredient instanceof Container) {
+                // We need to skip all containers for now.
+                continue;
+            }
+            if ($ingredient instanceof Element) {
+                if ($ingredient->getName() === $name) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
