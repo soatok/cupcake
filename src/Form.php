@@ -20,94 +20,6 @@ class Form extends Container
     protected ?AntiCSRFInterface $antiCSRF = null;
 
     /**
-     * @return string
-     */
-    public function getAction(): string
-    {
-        return $this->action;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMethod(): string
-    {
-        return $this->method;
-    }
-
-    /**
-     * @return self
-     */
-    public function disableAntiCSRF(): self
-    {
-        $this->antiCSRFdisabled = true;
-        return $this;
-    }
-
-    /**
-     * @return self
-     */
-    public function enableAntiCSRF(): self
-    {
-        $this->antiCSRFdisabled = false;
-        return $this;
-    }
-
-    /**
-     * Get the current Anti-CSRF mitigation.
-     *
-     * @param bool $ignoreDefault
-     * @return AntiCSRFInterface
-     * @throws CupcakeException
-     */
-    public function getAntiCSRF(bool $ignoreDefault = false): AntiCSRFInterface
-    {
-        if (is_null($this->antiCSRF)) {
-            if ($ignoreDefault) {
-                throw new CupcakeException('No Anti-CSRF class configured.');
-            }
-            return Utilities::defaultAntiCSRF();
-        }
-        return $this->antiCSRF;
-    }
-
-    /**
-     * Overwrite the anti-CSRF mitigation with another implementation at runtime.
-     *
-     * @param AntiCSRFInterface $antiCSRF
-     * @return self
-     */
-    public function setAntiCSRF(AntiCSRFInterface $antiCSRF): self
-    {
-        $this->antiCSRF = $antiCSRF;
-        return $this;
-    }
-
-    /**
-     * Set the action attribute for this form.
-     *
-     * @param string $action
-     * @return self
-     */
-    public function setAction(string $action): self
-    {
-        $this->action = $action;
-        return $this;
-    }
-
-    /**
-     * Set the HTTP request method for this form.
-     *
-     * @param string $method
-     * @return self
-     */
-    public function setMethod(string $method): self
-    {
-        $this->method = $method;
-        return $this;
-    }
-
-    /**
      * Returns a map where:
      *
      * - key   -> key to include in flattenAttributes()
@@ -135,22 +47,21 @@ class Form extends Container
     }
 
     /**
-     * @return string
+     * @return self
      */
-    public function renderBefore(): string
+    public function disableAntiCSRF(): self
     {
-        return sprintf(
-            '<form%s>',
-            $this->flattenAttributes(),
-        );
+        $this->antiCSRFdisabled = true;
+        return $this;
     }
 
     /**
-     * @return string
+     * @return self
      */
-    public function renderAfter(): string
+    public function enableAntiCSRF(): self
     {
-        return '</form>';
+        $this->antiCSRFdisabled = false;
+        return $this;
     }
 
     /**
@@ -172,6 +83,59 @@ class Form extends Container
 
     /**
      * @return string
+     */
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    /**
+     * Get the current Anti-CSRF mitigation.
+     *
+     * @param bool $ignoreDefault
+     * @return AntiCSRFInterface
+     * @throws CupcakeException
+     */
+    public function getAntiCSRF(bool $ignoreDefault = false): AntiCSRFInterface
+    {
+        if (is_null($this->antiCSRF)) {
+            if ($ignoreDefault) {
+                throw new CupcakeException('No Anti-CSRF class configured.');
+            }
+            return Utilities::defaultAntiCSRF();
+        }
+        return $this->antiCSRF;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @return string
+     */
+    public function renderAfter(): string
+    {
+        return '</form>';
+    }
+
+    /**
+     * @return string
+     */
+    public function renderBefore(): string
+    {
+        return sprintf(
+            '<form%s>',
+            $this->flattenAttributes(),
+        );
+    }
+
+    /**
+     * @return string
      * @throws CupcakeException
      */
     public function render(): string
@@ -180,5 +144,41 @@ class Form extends Container
             $this->finalizeCsrfElement();
         }
         return parent::render();
+    }
+
+    /**
+     * Set the action attribute for this form.
+     *
+     * @param string $action
+     * @return self
+     */
+    public function setAction(string $action): self
+    {
+        $this->action = $action;
+        return $this;
+    }
+
+    /**
+     * Overwrite the anti-CSRF mitigation with another implementation at runtime.
+     *
+     * @param AntiCSRFInterface $antiCSRF
+     * @return self
+     */
+    public function setAntiCSRF(AntiCSRFInterface $antiCSRF): self
+    {
+        $this->antiCSRF = $antiCSRF;
+        return $this;
+    }
+
+    /**
+     * Set the HTTP request method for this form.
+     *
+     * @param string $method
+     * @return self
+     */
+    public function setMethod(string $method): self
+    {
+        $this->method = $method;
+        return $this;
     }
 }
