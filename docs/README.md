@@ -4,7 +4,7 @@ The primary goal of Cupcake is to make form generation and
 secure data processing easy, without any framework-specific
 dependencies.
 
-## Quick Example
+## ![(Neophyte Cooking)](Neophyte/Cooking-40px.png) Quick Example
 
 Here are two snippets of code that will instantiate a web form,
 process the request (if it exists), and display it again with
@@ -109,9 +109,7 @@ the validated (and type-conforming) input will be passed to `$callback`.
 
 If the form fails validation, the form will be displayed again.
 
-## Tenets of Cupcake
-
-![Neophyte delighted](Neophyte/Happy.png)
+## ![(Neophyte Delighted)](Neophyte/Happy-40px.png) Tenets of Cupcake
 
 1. **Security is the highest priority.**
     * It MUST be harder to use this library insecurely than securely.
@@ -130,4 +128,6 @@ If the form fails validation, the form will be displayed again.
 ## Contents
 
 1. [Introduction to Cupcake](01-Intro.md)
-1. 
+1. [Baked-In Features](Baked-In) (Reference Documentation)
+1. [Examples](Examples)
+1. [Third-Party Integrations](Integrations)
