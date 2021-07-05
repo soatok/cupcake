@@ -17,6 +17,8 @@ Use Composer to install this library:
 composer require soatok/cupcake
 ```
 
+To learn how to use Cupcake, please see the **[Documentation](docs)** online.
+
 ## Questions and Answers
 
 ### Why "Cupcake"?
@@ -27,7 +29,7 @@ Wordplay! The German word for a cupcake mold is förmchen.
 
 Three things: Security, simplicity, and ease-of-use. 
 
-First, I designed Cupcake with security as its first principle.
+First, I designed Cupcake with [security as its first principle](docs#-tenets-of-cupcake).
 
 This doesn't *just* mean the bare basics like preventing cross-site scripting
 vulnerabilities and cross-site request forgery. Secure form processing means ensuring that [input validation isn't only performed client-side](https://soatok.blog/2020/04/27/why-server-side-input-validation-matters/).
@@ -45,3 +47,24 @@ level.
 ### How Do I Use Cupcake?
 
 See the [Documentation](docs) directory.
+
+If the documentation isn't helpful, please
+[file an issue on Github](https://github.com/soatok/cupcake/issues/new).
+
+### What's With the Cupcake Mascot?
+
+Their name is **[Neophyte](docs/Neophyte)**! (They/them pronouns.)
+
+Neophyte is a character owned by [Soatok](https://soatok.blog)
+(the creator of Cupcake) to represent people who read his blog or
+use his open source software.
+
+### Is Cupcake a Furry Project?
+
+![**Yes!**](docs/Soatok/Soatok-Yes.png)
+
+The author, Soatok, is a furry. [The mascot](docs/Neophyte)
+is a protogen (a fictitious species created within the furry fandom,
+for the furry fandom to enjoy).
+
+You can learn more about the Furry Fandom [here](https://soatok.blog/2020/04/23/never-underestimate-the-furry-fandom/).
