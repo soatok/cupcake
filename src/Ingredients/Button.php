@@ -4,7 +4,6 @@ namespace Soatok\Cupcake\Ingredients;
 
 use Soatok\Cupcake\Core\DoesNotPopulateTrait;
 use Soatok\Cupcake\Core\Element;
-use Soatok\Cupcake\Core\NameTrait;
 use Soatok\Cupcake\Core\Utilities;
 
 /**
@@ -13,10 +12,17 @@ use Soatok\Cupcake\Core\Utilities;
  */
 class Button extends Element
 {
-    use DoesNotPopulateTrait, NameTrait;
+    use DoesNotPopulateTrait;
     protected string $label;
     protected string $type;
 
+    /**
+     * Button constructor.
+     *
+     * @param string $name
+     * @param string $label
+     * @param string $type
+     */
     public function __construct(string $name = '', string $label = '', string $type = '')
     {
         $this->name = $name;
