@@ -4,6 +4,29 @@ The primary goal of Cupcake is to make form generation and
 secure data processing easy, without any framework-specific
 dependencies.
 
+## Contents
+
+1. [Introduction to Cupcake](01-Intro.md)
+1. [Baked-In Features](Baked-In) (Reference Documentation)
+1. [Examples](Examples)
+1. [Third-Party Integrations](Integrations)
+
+## ![(Neophyte Delighted)](Neophyte/Happy-40px.png) Tenets of Cupcake
+
+1. **Security is the highest priority.**
+   * It MUST be harder to use this library insecurely than securely.
+   * The defaults MUST be reasonable and secure.
+1. **Easy-to-use or bust.**
+   * If a neophyte cannot figure it out, the design is wrong.
+   * The Principle of Least Astonishment is our guiding principle.
+   * If something seems confusing or surprising, it needs to be corrected.
+1. **Extensibility.**
+   * It must be easy for a developer to extend Cupcake in their own projects.
+1. **Minimal dependencies.**
+   * Cupcake MUST not depend on a bloated web framework.
+   * (But it should be easy to integrate with an existing framework. See also:
+     Extensibility.)
+
 ## ![(Neophyte Cooking)](Neophyte/Cooking-40px.png) Quick Example
 
 Here are two snippets of code that will instantiate a web form,
@@ -108,26 +131,3 @@ When the user fills out the form, if their input passes validation,
 the validated (and type-conforming) input will be passed to `$callback`.
 
 If the form fails validation, the form will be displayed again.
-
-## ![(Neophyte Delighted)](Neophyte/Happy-40px.png) Tenets of Cupcake
-
-1. **Security is the highest priority.**
-    * It MUST be harder to use this library insecurely than securely.
-    * The defaults MUST be reasonable and secure.
-1. **Easy-to-use or bust.**
-    * If a neophyte cannot figure it out, the design is wrong.
-    * The Principle of Least Astonishment is our guiding principle.
-    * If something seems confusing or surprising, it needs to be corrected.
-1. **Extensibility.**
-    * It must be easy for a developer to extend Cupcake in their own projects.
-1. **Minimal dependencies.**
-    * Cupcake MUST not depend on a bloated web framework.
-    * (But it should be easy to integrate with an existing framework. See also:
-      Extensibility.)
-
-## Contents
-
-1. [Introduction to Cupcake](01-Intro.md)
-1. [Baked-In Features](Baked-In) (Reference Documentation)
-1. [Examples](Examples)
-1. [Third-Party Integrations](Integrations)
