@@ -91,7 +91,7 @@ trait StapleTrait
         }
         $return = '';
         foreach ($pieces as $attr => $value) {
-            $return .= "{$attr}=\"" . Utilities::escapeAttribute($value) . "\" ";
+            $return .= "{$attr}=\"" . Utilities::escapeAttribute((string) $value) . "\" ";
         }
         return ' ' . trim($return);
     }
