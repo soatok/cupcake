@@ -64,7 +64,26 @@ abstract class Container implements IngredientInterface
         array_unshift($this->ingredients, $ingredient);
         return $this;
     }
-
+ 
+    /**
+     * Prepend multiple ingredients in one shot.
+     *
+     * @param IngredientInterface[] $ingredients
+     * @return self
+     * @throws CupcakeException
+     */
+    public function prependArray(array $ingredients) : self
+    {
+        foreach($ingredients as $ingredient) {
+            if ($ingredient instanceof IngredientInterface) {
+                array_unshift($this->ingredients, $ingredient);
+            } else {
+                throw new CupcakeException('Invalid ingredient');
+            }
+        }
+        return $this;
+    }
+    
     /**
      * Returns a map where:
      *
