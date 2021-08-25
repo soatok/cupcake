@@ -35,15 +35,17 @@ abstract class Container implements IngredientInterface
         $this->ingredients[] = $ingredient;
         return $this;
     }
-    
+
     /**
-     * 
-     * @param array $ingredients
+     * Append multiple ingredients in one shot.
+     *
+     * @param IngredientInterface[] $ingredients
      * @return self
+     * @throws CupcakeException
      */
     public function appendArray(array $ingredients) : self
     {
-        foreach($ingredients as $index => $ingredient) {
+        foreach($ingredients as $ingredient) {
             if ($ingredient instanceof IngredientInterface) {
                 $this->ingredients[] = $ingredient;
             } else {
