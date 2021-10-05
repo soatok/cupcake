@@ -68,3 +68,7 @@ is a protogen (a fictitious species created within the furry fandom,
 for the furry fandom to enjoy).
 
 You can learn more about the Furry Fandom [here](https://soatok.blog/2020/04/23/never-underestimate-the-furry-fandom/).
+
+### Is Cupcake API-Stable?
+
+No, not until version 1.0.0 has been tagged.
