@@ -64,7 +64,7 @@ abstract class Container implements IngredientInterface
         array_unshift($this->ingredients, $ingredient);
         return $this;
     }
- 
+
     /**
      * Prepend multiple ingredients in one shot.
      *
@@ -83,7 +83,7 @@ abstract class Container implements IngredientInterface
         }
         return $this;
     }
-    
+
     /**
      * Returns a map where:
      *
@@ -392,9 +392,6 @@ abstract class Container implements IngredientInterface
     {
         // Search the top level first.
         foreach ($this->ingredients as $ingredient) {
-            if (!($ingredient instanceof Element)) {
-                continue;
-            }
             if ($ingredient->getId() === $id) {
                 return $ingredient;
             }
