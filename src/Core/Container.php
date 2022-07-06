@@ -26,6 +26,13 @@ abstract class Container implements IngredientInterface
     protected string $afterEach = '';
     protected string $beforeEach = '';
 
+    public function __clone()
+    {
+        foreach ($this->ingredients as $index => $original) {
+            $this->ingredients[$index] = clone $original;
+        }
+    }
+
     /**
      * @param IngredientInterface $ingredient
      * @return self

@@ -15,6 +15,7 @@
   "require": {
     "php": "^8",
     "paragonie/ionizer": "^1",
+    "paragonie/sodium_compat": "^1",
     "ezyang/htmlpurifier": "^4"
   },
   "require-dev": {
@@ -31,5 +32,8 @@
     "taint": ["psalm --taint-analysis"],
     "test": ["phpunit", "psalm", "psalm --taint-analysis"],
     "unit-test": ["phpunit"]
+  },
+  "suggest": {
+    "ext-sodium": "ID population is faster."
   }
 }

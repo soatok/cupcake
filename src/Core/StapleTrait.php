@@ -116,6 +116,11 @@ trait StapleTrait
         return $this->id;
     }
 
+    public function idIsPopulated(): bool
+    {
+        return !empty($this->id);
+    }
+
     /**
      * @param string $id
      * @return self
