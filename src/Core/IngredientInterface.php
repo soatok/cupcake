@@ -26,6 +26,11 @@ interface IngredientInterface
     public function getId(): string;
 
     /**
+     * @return bool
+     */
+    public function idIsPopulated(): bool;
+
+    /**
      * Return the HTML to display to the end user.
      *
      * @return string
