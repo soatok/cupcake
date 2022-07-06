@@ -58,6 +58,11 @@ class Utilities
         return htmlentities($input, ENT_HTML5 | ENT_QUOTES, 'utf-8');
     }
 
+    public static function escapeIDAttribute(string $id): string
+    {
+        return preg_replace('/[^A-Za-z0-9-_]/', '', $id);
+    }
+
     /**
      * @param array $classes
      * @return string

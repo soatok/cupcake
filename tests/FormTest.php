@@ -37,6 +37,17 @@ class FormTest extends TestCase
             $form . ''
         );
     }
+
+    public function testIdWithUnderline()
+    {
+        $form = (new Form())->disableAntiCSRF();
+        $form->setId('group_order');
+        $this->assertSame(
+            '<form id="group_order" method="GET" action=""></form>',
+            $form . ''
+        );
+    }
+
     public function testEmptyWithoutDisablingCsrfProtection()
     {
         /** @var array<string, string> $storage */

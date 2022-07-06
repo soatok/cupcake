@@ -63,7 +63,7 @@ trait StapleTrait
         $pieces = $this->renderAttributes();
 
         if (!empty($this->id)) {
-            $pieces['id'] = Utilities::escapeAttribute($this->id);
+            $pieces['id'] = $this->id;
         }
 
         if (!empty($this->classes)) {
@@ -91,7 +91,11 @@ trait StapleTrait
         }
         $return = '';
         foreach ($pieces as $attr => $value) {
-            $return .= "{$attr}=\"" . Utilities::escapeAttribute((string) $value) . "\" ";
+            if ($attr === 'id') {
+                $return .= "{$attr}=\"" . Utilities::escapeIDAttribute((string)$value) . "\" ";
+            } else {
+                $return .= "{$attr}=\"" . Utilities::escapeAttribute((string)$value) . "\" ";
+            }
         }
         return ' ' . trim($return);
     }
