@@ -15,7 +15,6 @@
   "require": {
     "php": "^8",
     "paragonie/ionizer": "^1",
-    "paragonie/sodium_compat": "^1",
     "ezyang/htmlpurifier": "^4"
   },
   "require-dev": {
