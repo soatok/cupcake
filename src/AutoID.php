@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake;
 
+use Exception;
 use Soatok\Cupcake\Core\Container;
 use SodiumException;
 
@@ -11,6 +12,9 @@ class AutoID
     private string $key;
     private int $length;
 
+    /**
+     * @throws Exception
+     */
     public function __construct(?string $key = null, int $length = 16, bool $objectHash = false)
     {
         if (is_null($key)) {
@@ -35,6 +39,9 @@ class AutoID
             );
     }
 
+    /**
+     * @throws SodiumException
+     */
     public function autoPopulate(Container $container): Container
     {
         $copy = clone $container;
@@ -57,6 +64,9 @@ class AutoID
         $this->objectHash = $useObjectHash;
     }
 
+    /**
+     * @throws SodiumException
+     */
     private function recursivePopulate(
         Container $container,
         string $prefix = '',

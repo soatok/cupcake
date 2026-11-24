@@ -14,8 +14,8 @@
   },
   "require": {
     "php": "^8",
-    "paragonie/ionizer": "^1",
-    "paragonie/sodium_compat": "^1",
+    "paragonie/ionizer": "^1|^2",
+    "paragonie/sodium_compat": "^1|^2",
     "ezyang/htmlpurifier": "^4"
   },
   "require-dev": {
