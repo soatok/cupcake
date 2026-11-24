@@ -47,6 +47,7 @@ class Checkbox extends InputTag
      * @param bool $value
      * @return string
      */
+    #[\Override]
     public function boolPropertyValue(string $name, bool $value): string
     {
         if ($name === 'checked') {
@@ -60,20 +61,21 @@ class Checkbox extends InputTag
      * @return IngredientInterface
      * @throws CupcakeException
      */
+    #[\Override]
     public function populateUserInput(array $untrusted): IngredientInterface
     {
         /** @var string[]|string[][] $pointer */
         $pointer = &$untrusted;
         $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
         foreach ($pieces as $piece) {
-            if (!array_key_exists($piece, $pointer)) {
+            if (!is_array($pointer) || !array_key_exists($piece, $pointer)) {
                 $this->checked = false;
                 return $this;
             }
             /** @var string[]|string[][] $pointer */
             $pointer = &$pointer[$piece];
         }
-        /** @var string|string[] $pointer */
+
         if (is_array($pointer)) {
             $this->checked = false;
             return $this;
@@ -90,6 +92,7 @@ class Checkbox extends InputTag
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         $attributes = parent::customAttributes();

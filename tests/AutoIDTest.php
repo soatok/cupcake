@@ -2,17 +2,20 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Form;
 use Soatok\Cupcake\AutoID;
 use Soatok\Cupcake\Ingredients\Div;
 use Soatok\Cupcake\Ingredients\Input\Text;
+use SodiumException;
 
-/**
- * @covers \Soatok\Cupcake\AutoID
- */
+#[CoversClass(AutoID::class)]
 class AutoIDTest extends TestCase
 {
+    /**
+     * @throws SodiumException
+     */
     public function testEmpty()
     {
         $form = new Form();
@@ -25,7 +28,7 @@ class AutoIDTest extends TestCase
             $autoId->autoPopulate($form) . ''
         );
 
-        // This always mixes with spl_object_hash even with weak keys
+        // This always mixes with spl_object_id even with weak keys
         $autoId->setObjectHash(true);
 
         $this->assertNotSame(
@@ -33,7 +36,7 @@ class AutoIDTest extends TestCase
             $autoId->autoPopulate($form) . ''
         );
 
-        $expect = $autoId->autoId(pack('P', 0) . spl_object_hash($autoId));
+        $expect = $autoId->autoId(pack('P', 0) . spl_object_id($autoId));
         $this->assertSame(
             '<form id="' . $expect . '" method="GET" action=""></form>',
             $autoId->autoPopulate($form) . ''
@@ -56,10 +59,10 @@ class AutoIDTest extends TestCase
             $autoId->autoPopulate($form) . ''
         );
 
-        $h0 = $autoId->autoId(pack('P', 0) . spl_object_hash($autoId));
-        $h1 = $autoId->autoId(pack('P', 1) . spl_object_hash($autoId) . pack('P', 0));
-        $h2 = $autoId->autoId(pack('P', 1) . spl_object_hash($autoId) . pack('P', 1));
-        $h3 = $autoId->autoId(pack('P', 2) . spl_object_hash($autoId) . pack('P', 1) . pack('P', 0));
+        $h0 = $autoId->autoId(pack('P', 0) . spl_object_id($autoId));
+        $h1 = $autoId->autoId(pack('P', 1) . spl_object_id($autoId) . pack('P', 0));
+        $h2 = $autoId->autoId(pack('P', 1) . spl_object_id($autoId) . pack('P', 1));
+        $h3 = $autoId->autoId(pack('P', 2) . spl_object_id($autoId) . pack('P', 1) . pack('P', 0));
 
         $this->assertSame(
             '<form id="' . $h0

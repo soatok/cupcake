@@ -22,6 +22,7 @@ class Div extends Container
     /**
      * @return string
      */
+    #[\Override]
     public function renderBefore(): string
     {
         return sprintf(
@@ -33,6 +34,7 @@ class Div extends Container
     /**
      * @return string
      */
+    #[\Override]
     public function renderAfter(): string
     {
         return '</div>';

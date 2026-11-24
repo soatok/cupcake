@@ -2,14 +2,11 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Ingredients\PurifiedHtmlBlock;
 
-/**
- * Class PurifiedHtmlBlockTest
- * @package Soatok\Cupcake\Tests\Ingredients
- * @covers PurifiedHtmlBlock
- */
+#[CoversClass(PurifiedHtmlBlock::class)]
 class PurifiedHtmlBlockTest extends TestCase
 {
     public function testWithXSSAttempt()

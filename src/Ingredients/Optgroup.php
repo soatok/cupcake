@@ -25,6 +25,7 @@ class Optgroup extends Container
      * @param IngredientInterface $ingredient
      * @return Container
      */
+    #[\Override]
     public function append(IngredientInterface $ingredient): Container
     {
         if (!($ingredient instanceof Option)) {
@@ -41,6 +42,7 @@ class Optgroup extends Container
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         return ['label' => null];
@@ -51,6 +53,7 @@ class Optgroup extends Container
      *
      * @return string
      */
+    #[\Override]
     public function renderAfter(): string
     {
         return '</optgroup>';
@@ -61,6 +64,7 @@ class Optgroup extends Container
      *
      * @return string
      */
+    #[\Override]
     public function renderBefore(): string
     {
         return sprintf('<optgroup%s>', $this->flattenAttributes());

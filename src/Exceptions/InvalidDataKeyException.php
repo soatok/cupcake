@@ -6,7 +6,4 @@ namespace Soatok\Cupcake\Exceptions;
  * Class InvalidDataKeyException
  * @package Soatok\Cupcake\Exceptions
  */
-class InvalidDataKeyException extends CupcakeException
-{
-
-}
+class InvalidDataKeyException extends CupcakeException {}

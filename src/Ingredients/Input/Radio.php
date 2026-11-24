@@ -31,6 +31,7 @@ class Radio extends InputTag
      * @param bool $value
      * @return string
      */
+    #[\Override]
     public function boolPropertyValue(string $name, bool $value): string
     {
         if ($name === 'checked') {
@@ -47,6 +48,7 @@ class Radio extends InputTag
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         $attributes = parent::customAttributes();

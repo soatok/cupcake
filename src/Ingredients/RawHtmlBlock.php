@@ -46,6 +46,7 @@ class RawHtmlBlock extends Element
     /**
      * @return string
      */
+    #[\Override]
     public function render(): string
     {
         return $this->contents;

@@ -2,14 +2,11 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Soatok\Cupcake\Ingredients\Progress;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class ProgressTest
- * @package Soatok\Cupcake\Tests\Ingredients
- * @covers Progress
- */
+#[CoversClass(Progress::class)]
 class ProgressTest extends TestCase
 {
     public function testEmpty()

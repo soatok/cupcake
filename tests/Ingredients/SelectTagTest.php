@@ -2,16 +2,13 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Ingredients\Optgroup;
 use Soatok\Cupcake\Ingredients\Option;
 use Soatok\Cupcake\Ingredients\SelectTag;
 
-/**
- * Class SelectTagTest
- * @package Soatok\Cupcake\Tests\Ingredients
- * @covers SelectTag
- */
+#[CoversClass(SelectTag::class)]
 class SelectTagTest extends TestCase
 {
     public function testEmpty()

@@ -13,14 +13,16 @@
     }
   },
   "require": {
-    "php": "^8",
+    "php": "^8.2",
     "paragonie/ionizer": "^1|^2",
     "paragonie/sodium_compat": "^1|^2",
     "ezyang/htmlpurifier": "^4"
   },
   "require-dev": {
-    "phpunit/phpunit": "^9",
-    "vimeo/psalm": "^4"
+    "friendsofphp/php-cs-fixer": "^3.5",
+    "soatok/code-style": ">= 0",
+    "phpunit/phpunit": "^11|^12|^13",
+    "vimeo/psalm": "^6|^7"
   },
   "scripts": {
     "local": [
@@ -31,7 +33,9 @@
     "static-analysis": ["psalm"],
     "taint": ["psalm --taint-analysis"],
     "test": ["phpunit", "psalm", "psalm --taint-analysis"],
-    "unit-test": ["phpunit"]
+    "unit-test": ["phpunit"],
+    "style": "php-cs-fixer fix --allow-risky=yes --dry-run --diff",
+    "style-fix": "php-cs-fixer fix --allow-risky=yes"
   },
   "suggest": {
     "ext-sodium": "ID population is faster."

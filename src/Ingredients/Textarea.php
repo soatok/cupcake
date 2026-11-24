@@ -25,6 +25,7 @@ class Textarea extends Element
         $this->contents = $contents;
     }
 
+    #[\Override]
     public function customAttributes(): array
     {
         $attributes = [];
@@ -34,6 +35,7 @@ class Textarea extends Element
         return $attributes;
     }
 
+    #[\Override]
     public function render(): string
     {
         return sprintf(
@@ -48,19 +50,20 @@ class Textarea extends Element
      * @return IngredientInterface
      * @throws CupcakeException
      */
+    #[\Override]
     public function populateUserInput(array $untrusted): IngredientInterface
     {
         /** @var string[]|string[][] $pointer */
         $pointer = &$untrusted;
         $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
         foreach ($pieces as $piece) {
-            if (!array_key_exists($piece, $pointer)) {
+            if (!is_array($pointer) || !array_key_exists($piece, $pointer)) {
                 return $this;
             }
             /** @var string[]|string[][] $pointer */
             $pointer = &$pointer[$piece];
         }
-        /** @var string|string[] $pointer */
+
         if (is_array($pointer)) {
             return $this;
         }

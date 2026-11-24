@@ -17,7 +17,8 @@ use ParagonIE\Ionizer\InputFilter;
  */
 abstract class Element implements IngredientInterface
 {
-    use NameTrait, StapleTrait;
+    use NameTrait;
+    use StapleTrait;
 
     protected ?bool $autocomplete = null;
     protected bool $required = false;
@@ -31,21 +32,11 @@ abstract class Element implements IngredientInterface
      */
     public function getFilter(): FilterInterface
     {
-        if (!is_null($this->filter)) {
-            return $this->filter;
-        }
-        if (!empty($this->pattern)) {
-            $filter = new StringFilter();
+        $filter = $this->filter ? clone $this->filter : new StringInputFilter();
+        if ($filter instanceof StringInputFilter && $this->pattern !== '') {
             $filter->setPattern($this->pattern);
-            if ($this->required) {
-                $filter->addCallback([InputFilter::class, 'required']);
-            }
-            return $filter;
-        } elseif ($this->required) {
-            return (new InputFilter())
-                ->addCallback([InputFilter::class, 'required']);
         }
-        return new InputFilter();
+        return new FieldFilter($filter, $this->required);
     }
 
     /**
@@ -109,6 +100,7 @@ abstract class Element implements IngredientInterface
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         return [];
@@ -119,6 +111,7 @@ abstract class Element implements IngredientInterface
      *
      * @return array<string, string>
      */
+    #[\Override]
     public function renderAttributes(): array
     {
         return [];
@@ -127,5 +120,6 @@ abstract class Element implements IngredientInterface
     /**
      * @return string
      */
+    #[\Override]
     abstract public function render(): string;
 }

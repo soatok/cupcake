@@ -6,7 +6,4 @@ namespace Soatok\Cupcake\Exceptions;
  * Class InvalidMixtureException
  * @package Soatok\Cupcake\Exceptions
  */
-class InvalidMixtureException extends CupcakeException
-{
-
-}
+class InvalidMixtureException extends CupcakeException {}

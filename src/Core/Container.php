@@ -2,7 +2,10 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Core;
 
-use ParagonIE\Ionizer\{InputFilter, InputFilterContainer, InvalidDataException};
+use ParagonIE\Ionizer\{
+    InputFilter,
+    InvalidDataException
+};
 use Soatok\Cupcake\Exceptions\{
     ChildNotFoundException,
     CupcakeException
@@ -50,9 +53,9 @@ abstract class Container implements IngredientInterface
      * @return self
      * @throws CupcakeException
      */
-    public function appendArray(array $ingredients) : self
+    public function appendArray(array $ingredients): self
     {
-        foreach($ingredients as $ingredient) {
+        foreach ($ingredients as $ingredient) {
             if ($ingredient instanceof IngredientInterface) {
                 $this->ingredients[] = $ingredient;
             } else {
@@ -79,9 +82,9 @@ abstract class Container implements IngredientInterface
      * @return self
      * @throws CupcakeException
      */
-    public function prependArray(array $ingredients) : self
+    public function prependArray(array $ingredients): self
     {
-        foreach($ingredients as $ingredient) {
+        foreach ($ingredients as $ingredient) {
             if ($ingredient instanceof IngredientInterface) {
                 array_unshift($this->ingredients, $ingredient);
             } else {
@@ -99,6 +102,7 @@ abstract class Container implements IngredientInterface
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         return [];
@@ -109,6 +113,7 @@ abstract class Container implements IngredientInterface
      *
      * @return array<string, string>
      */
+    #[\Override]
     public function renderAttributes(): array
     {
         return [];
@@ -158,9 +163,10 @@ abstract class Container implements IngredientInterface
      *
      * @return string
      */
+    #[\Override]
     public function render(): string
     {
-        /** @var string[] $objectsVisited */
+        /** @var int[] $objectsVisited */
         $objectsVisited = [];
         return $this->renderComponents($objectsVisited);
     }
@@ -184,8 +190,8 @@ abstract class Container implements IngredientInterface
     /**
      * Render all of the components as a flat string.
      *
-     * @param string[] &$objectsVisited
-     * @param-out string[] &$objectsVisited
+     * @param int[] &$objectsVisited
+     * @param-out int[] &$objectsVisited
      * @return string
      */
     protected function renderComponents(array &$objectsVisited): string
@@ -204,22 +210,22 @@ abstract class Container implements IngredientInterface
     /**
      * Recursively walk down all other Containers and render the whole shebang.
      *
-     * @param string[] &$objectsVisited
+     * @param int[] &$objectsVisited
      * @return array
-     * @param-out string[] &$objectsVisited
+     * @param-out int[] &$objectsVisited
      */
     protected function renderInternal(array &$objectsVisited): array
     {
-        if (in_array(spl_object_hash($this), $objectsVisited, true)) {
+        if (in_array(spl_object_id($this), $objectsVisited, true)) {
             // Prevent cycles.
             return [];
         }
-        /** @var string[] $objectsVisited */
-        $objectsVisited[] = spl_object_hash($this);
+
+        $objectsVisited[] = spl_object_id($this);
         /** @var string[] $pieces */
         $pieces = [];
         foreach ($this->ingredients as $ingredient) {
-            $hash = spl_object_hash($ingredient);
+            $hash = spl_object_id($ingredient);
             if (in_array($hash, $objectsVisited, true)) {
                 // Prevent cycles.
                 continue;
@@ -257,7 +263,7 @@ abstract class Container implements IngredientInterface
     }
 
     /**
-     * @param string[] &$objectsVisited
+     * @param int[] &$objectsVisited
      * @param array<string, InputFilter> $inputFilters
      * @throws CupcakeException
      */
@@ -265,21 +271,24 @@ abstract class Container implements IngredientInterface
         array &$objectsVisited,
         array &$inputFilters
     ): void {
-        if (in_array(spl_object_hash($this), $objectsVisited, true)) {
+        if (in_array(spl_object_id($this), $objectsVisited, true)) {
             // Prevent cycles.
             return;
         }
+        $objectsVisited[] = spl_object_id($this);
         /** @var Element|Container $ingredient */
         foreach ($this->ingredients as $ingredient) {
-            $hash = spl_object_hash($ingredient);
+            $hash = spl_object_id($ingredient);
             if (in_array($hash, $objectsVisited, true)) {
                 // Prevent cycles.
                 continue;
             }
             if ($ingredient instanceof Container) {
-                $objectsVisited[] = $hash;
                 $ingredient->getInputFiltersInternal($objectsVisited, $inputFilters);
             } else {
+                if ($ingredient instanceof File || $ingredient->getName() === '') {
+                    continue;
+                }
                 $filter = $ingredient->getFilter();
                 if ($filter instanceof InputFilter) {
                     $inputFilters[$ingredient->getIonizerName()] = $filter;
@@ -309,12 +318,12 @@ abstract class Container implements IngredientInterface
     }
 
     /**
-     * @return InputFilterContainer
+     * @return FilterContainer
      * @throws CupcakeException
      */
-    public function getInputFilters(): InputFilterContainer
+    public function getInputFilters(): FilterContainer
     {
-        /** @var string[] $visited */
+        /** @var int[] $visited */
         $visited = [];
         /** @var array<string, InputFilter> $filters */
         $filters = [];
@@ -322,7 +331,6 @@ abstract class Container implements IngredientInterface
 
         $container = new FilterContainer();
         /**
-         * @var string $name
          * @var InputFilter $filter
          */
         foreach ($filters as $name => $filter) {
@@ -432,7 +440,7 @@ abstract class Container implements IngredientInterface
             if (empty($keys)) {
                 throw new CupcakeException('No elements found in this container');
             }
-            /** @var int $index */
+
             $index = array_pop($keys);
         } while (!($this->ingredients[$index] instanceof Element));
         return $index;
@@ -459,6 +467,7 @@ abstract class Container implements IngredientInterface
      * @param array $untrusted
      * @return IngredientInterface
      */
+    #[\Override]
     public function populateUserInput(array $untrusted): IngredientInterface
     {
         foreach ($this->ingredients as $ingredient) {

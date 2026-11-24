@@ -3,14 +3,11 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Blends;
 
 use ParagonIE\Ionizer\Filter\IntArrayFilter;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Soatok\Cupcake\Blends\MultiCheckbox;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class MultiCheckboxTest
- * @package Soatok\Cupcake\Tests\Blends
- * @covers MultiCheckbox
- */
+#[CoversClass(MultiCheckbox::class)]
 class MultiCheckboxTest extends TestCase
 {
     public function testEmpty()

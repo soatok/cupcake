@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Security\AntiCSRF;
+
 use Soatok\Cupcake\Security\AntiCSRF\CookieBacked;
 
 /**

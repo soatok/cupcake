@@ -2,16 +2,12 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Core;
 
+use PHPUnit\Framework\Attributes\CoversTrait;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Core\NameTrait;
 use Soatok\Cupcake\Exceptions\CupcakeException;
 
-/**
- * Class NameTraitTest
- * @package Soatok\Cupcake\Tests\Core
- *
- * @covers NameTrait
- */
+#[CoversTrait(NameTrait::class)]
 class NameTraitTest extends TestCase
 {
     protected ClassWithNameTrait $testClass;

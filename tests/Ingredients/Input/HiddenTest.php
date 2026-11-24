@@ -2,14 +2,11 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients\Input;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Ingredients\Input\Hidden;
 
-/**
- * Class HiddenTest
- * @package Soatok\Cupcake\Tests\Ingredients
- * @covers Hidden
- */
+#[CoversClass(Hidden::class)]
 class HiddenTest extends TestCase
 {
     public function testEmpty()

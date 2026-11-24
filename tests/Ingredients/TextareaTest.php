@@ -2,15 +2,12 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Exceptions\InvalidDataKeyException;
 use Soatok\Cupcake\Ingredients\Textarea;
 
-/**
- * Class TextareaTest
- * @package Soatok\Cupcake\Tests\Ingredients
- * @covers Textarea
- */
+#[CoversClass(Textarea::class)]
 class TextareaTest extends TestCase
 {
     public function testEmpty()

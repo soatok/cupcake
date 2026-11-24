@@ -35,6 +35,7 @@ class Label extends Element
      *
      * @return array<string, string>
      */
+    #[\Override]
     public function renderAttributes(): array
     {
         if ($this->for) {
@@ -56,6 +57,7 @@ class Label extends Element
     /**
      * @return string
      */
+    #[\Override]
     public function render(): string
     {
         return sprintf(

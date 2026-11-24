@@ -42,10 +42,11 @@ class InputTag extends Element
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         $attributes = ['type' => null, 'name' => null];
-        if (!empty($this->value)) {
+        if ($this->value !== '') {
             $attributes['value'] = null;
         }
         return $attributes;
@@ -56,6 +57,7 @@ class InputTag extends Element
      *
      * @return array<string, string>
      */
+    #[\Override]
     public function renderAttributes(): array
     {
         if ($this->datalist) {
@@ -69,6 +71,7 @@ class InputTag extends Element
      *
      * @return string
      */
+    #[\Override]
     public function render(): string
     {
         return sprintf(

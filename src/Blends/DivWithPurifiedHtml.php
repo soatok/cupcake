@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Blends;
 
 use Soatok\Cupcake\Core\Container;
-use Soatok\Cupcake\Core\Utilities;
 use Soatok\Cupcake\Ingredients\PurifiedHtmlBlock;
 use Soatok\Cupcake\Ingredients\RawHtmlBlock;
 
@@ -16,6 +15,7 @@ class DivWithPurifiedHtml extends Container
     /**
      * DivWithPurifiedHtml constructor.
      * @param string $contents
+     * @param string $id
      */
     public function __construct(string $contents, string $id = '')
     {

@@ -2,15 +2,12 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Ingredients\Fieldset;
 use Soatok\Cupcake\Ingredients\PurifiedHtmlBlock;
 
-/**
- * Class FieldsetTest
- * @package Soatok\Cupcake\Tests\Ingredients
- * @covers Fieldset
- */
+#[CoversClass(Fieldset::class)]
 class FieldsetTest extends TestCase
 {
     public function testEmpty()

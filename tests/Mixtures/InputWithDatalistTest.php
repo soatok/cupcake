@@ -2,17 +2,14 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Mixtures;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Form;
 use Soatok\Cupcake\Ingredients\Datalist;
 use Soatok\Cupcake\Ingredients\InputTag;
 
-/**
- * Class InputWithDatalistTest
- * @package Soatok\Cupcake\Tests\Mixtures
- *
- * @covers InputTag, Datalist
- */
+#[CoversClass(InputTag::class)]
+#[CoversClass(Datalist::class)]
 class InputWithDatalistTest extends TestCase
 {
     public function testInputWithDatalist()

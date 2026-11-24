@@ -6,7 +6,4 @@ namespace Soatok\Cupcake\Exceptions;
  * Class ChildNotFoundException
  * @package Soatok\Cupcake\Exceptions
  */
-class ChildNotFoundException extends CupcakeException
-{
-
-}
+class ChildNotFoundException extends CupcakeException {}

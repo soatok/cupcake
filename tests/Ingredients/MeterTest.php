@@ -2,14 +2,11 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Soatok\Cupcake\Ingredients\Meter;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class MeterTest
- * @package Soatok\Cupcake\Tests\Ingredients
- * @covers Meter
- */
+#[CoversClass(Meter::class)]
 class MeterTest extends TestCase
 {
     public function testEmpty()

@@ -16,6 +16,17 @@ trait StapleTrait
     protected string $id = '';
     protected array $classes = [];
     protected array $data = [];
+    /** @var array<string, string> */
+    protected array $aria = [];
+
+    public function setAria(string $name, string $value): self
+    {
+        if (!preg_match('/^[a-z][a-z0-9-]*$/D', $name)) {
+            throw new \InvalidArgumentException('Invalid ARIA attribute name.');
+        }
+        $this->aria[$name] = $value;
+        return $this;
+    }
 
     /**
      * @param string $class
@@ -23,7 +34,7 @@ trait StapleTrait
      */
     public function addClass(string $class): self
     {
-        $this->classes []= $class;
+        $this->classes [] = $class;
         return $this;
     }
 
@@ -70,6 +81,9 @@ trait StapleTrait
             $pieces['class'] = Utilities::escapeClasses($this->classes);
         }
 
+        foreach ($this->aria as $key => $value) {
+            $pieces['aria-' . $key] = $value;
+        }
         foreach ($this->data as $key => $value) {
             $pieces['data-' . $key] = $value;
         }

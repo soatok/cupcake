@@ -27,6 +27,7 @@ class Meter extends Element
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         $attributes = [];
@@ -52,6 +53,7 @@ class Meter extends Element
         return $attributes;
     }
 
+    #[\Override]
     public function render(): string
     {
         return sprintf(

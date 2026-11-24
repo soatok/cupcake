@@ -18,6 +18,17 @@ class Option extends Element
     protected string $label;
     protected string $value;
 
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    public function setSelected(bool $selected): self
+    {
+        $this->selected = $selected;
+        return $this;
+    }
+
     public function __construct(string $label, string $value, bool $selected = false)
     {
         $this->label = $label;
@@ -33,6 +44,7 @@ class Option extends Element
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         $attributes = ['value' => null];
@@ -47,6 +59,7 @@ class Option extends Element
      * @param bool $value
      * @return string
      */
+    #[\Override]
     public function boolPropertyValue(string $name, bool $value): string
     {
         if ($name === 'selected') {
@@ -60,20 +73,21 @@ class Option extends Element
      * @return IngredientInterface
      * @throws CupcakeException
      */
+    #[\Override]
     public function populateUserInput(array $untrusted): IngredientInterface
     {
         /** @var string[]|string[][] $pointer */
         $pointer = &$untrusted;
         $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
         foreach ($pieces as $piece) {
-            if (!array_key_exists($piece, $pointer)) {
+            if (!is_array($pointer) || !array_key_exists($piece, $pointer)) {
                 $this->selected = false;
                 return $this;
             }
             /** @var string[]|string[][] $pointer */
             $pointer = &$pointer[$piece];
         }
-        /** @var string|string[] $pointer */
+
         if (is_array($pointer)) {
             return $this;
         }
@@ -84,6 +98,7 @@ class Option extends Element
     /**
      * @return string
      */
+    #[\Override]
     public function render(): string
     {
         return sprintf(

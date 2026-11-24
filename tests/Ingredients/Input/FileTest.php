@@ -2,14 +2,11 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients\Input;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Ingredients\Input\File;
 
-/**
- * Class FileTest
- * @package Soatok\Cupcake\Tests\Ingredients
- * @covers File
- */
+#[CoversClass(File::class)]
 class FileTest extends TestCase
 {
     public function testEmpty()

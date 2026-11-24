@@ -2,27 +2,29 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests;
 
+use Exception;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Soatok\Cupcake\Blends\MultiCheckbox;
-use Soatok\Cupcake\Blends\RadioSet;
+use Soatok\Cupcake\Blends\{
+    MultiCheckbox,
+    RadioSet
+};
 use Soatok\Cupcake\Form;
-use Soatok\Cupcake\Ingredients\Fieldset;
-use Soatok\Cupcake\Ingredients\Input\File;
-use Soatok\Cupcake\Ingredients\Input\Text;
-use Soatok\Cupcake\Ingredients\InputTag;
+use Soatok\Cupcake\Ingredients\{
+    Fieldset,
+    Input\File,
+    Input\Text,
+    InputTag
+};
 use Soatok\Cupcake\Tests\Security\AntiCSRF\CookieBackedDummy;
 
-/**
- * Class FormTest
- * @package Soatok\Cupcake\Tests
- * @covers Form
- */
+#[CoversClass(Form::class)]
 class FormTest extends TestCase
 {
     protected string $idPrefix = '';
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function setUp(): void
     {
@@ -64,7 +66,7 @@ class FormTest extends TestCase
         $token = $storage['cupcake-csrf'];
         $this->assertSame(
             '<form method="GET" action="">' .
-                '<input type="hidden" name="anti-csrf" value="' . $token . '" />' .
+                '<input type="hidden" name="cupcake-csrf" value="' . $token . '" />' .
             '</form>',
             $form . ''
         );
@@ -120,7 +122,7 @@ class FormTest extends TestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testPopulateInput()
     {
@@ -152,7 +154,7 @@ class FormTest extends TestCase
 
     /**
      * @return Form
-     * @throws \Exception
+     * @throws Exception
      */
     protected function exampleForm(): Form
     {

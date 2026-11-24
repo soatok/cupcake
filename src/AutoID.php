@@ -31,12 +31,12 @@ class AutoID
     public function autoId(string $unique): string
     {
         return 'cupcake-' . sodium_bin2hex(
-                sodium_crypto_generichash(
-                    $unique,
-                    $this->key,
-                    $this->length
-                )
-            );
+            sodium_crypto_generichash(
+                $unique,
+                $this->key,
+                $this->length
+            )
+        );
     }
 
     /**
@@ -45,7 +45,7 @@ class AutoID
     public function autoPopulate(Container $container): Container
     {
         $copy = clone $container;
-        $obj = $this->objectHash ? spl_object_hash($this) : '';
+        $obj = $this->objectHash ? (string) spl_object_id($this) : '';
         if (!$copy->idIsPopulated()) {
             $copy->setId($this->autoId(
                 pack('P', 0) . $obj

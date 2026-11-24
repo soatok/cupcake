@@ -2,16 +2,13 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Blends;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Soatok\Cupcake\Blends\CheckboxWithLabel;
 use Soatok\Cupcake\Ingredients\Input\Checkbox;
 use Soatok\Cupcake\Ingredients\Label;
 
-/**
- * Class CheckboxWithLabelTest
- * @package Soatok\Cupcake\Tests\Blends
- * @covers CheckboxWithLabel
- */
+#[CoversClass(CheckboxWithLabel::class)]
 class CheckboxWithLabelTest extends TestCase
 {
     public function testEmpty()

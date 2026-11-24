@@ -12,7 +12,8 @@ use Soatok\Cupcake\Core\NameTrait;
  */
 class Datalist extends Container
 {
-    use DoesNotPopulateTrait, NameTrait;
+    use DoesNotPopulateTrait;
+    use NameTrait;
     protected string $value = '';
 
     /**
@@ -36,6 +37,7 @@ class Datalist extends Container
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         $attributes = [];
@@ -53,6 +55,7 @@ class Datalist extends Container
      *
      * @return string
      */
+    #[\Override]
     public function renderBefore(): string
     {
         return sprintf(
@@ -64,11 +67,13 @@ class Datalist extends Container
     /**
      * @return string
      */
+    #[\Override]
     public function renderAfter(): string
     {
         return '</datalist>';
     }
 
+    #[\Override]
     public function render(): string
     {
         $middle = '';

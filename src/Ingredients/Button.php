@@ -50,6 +50,7 @@ class Button extends Element
         return $this;
     }
 
+    #[\Override]
     public function customAttributes(): array
     {
         $attributes = [];
@@ -67,6 +68,7 @@ class Button extends Element
      *
      * @return string
      */
+    #[\Override]
     public function render(): string
     {
         return sprintf(

@@ -33,6 +33,7 @@ class PurifiedHtmlBlock extends Element
     /**
      * @return string
      */
+    #[\Override]
     public function render(): string
     {
         return Utilities::purify($this->contents);

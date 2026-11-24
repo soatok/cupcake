@@ -11,9 +11,11 @@ use ParagonIE\Ionizer\Filter\{
     StringArrayFilter
 };
 use ParagonIE\Ionizer\InputFilter;
-use Soatok\Cupcake\Core\Container;
-use Soatok\Cupcake\Core\IngredientInterface;
-use Soatok\Cupcake\Core\NameTrait;
+use Soatok\Cupcake\Core\{
+    ChoiceFilter,
+    Container,
+    IngredientInterface,
+    NameTrait};
 use Soatok\Cupcake\Exceptions\CupcakeException;
 use Soatok\Cupcake\FilterContainer;
 use Soatok\Cupcake\Ingredients\Input\Checkbox;
@@ -35,7 +37,7 @@ class MultiCheckbox extends Container
      */
     public function __construct(string $name, ?InputFilter $filter = null)
     {
-        $this->name = (string) preg_replace('#[\[\]]#', '',  $name);
+        $this->name = (string) preg_replace('#[\[\]]#', '', $name);
         $this->filter = $filter;
     }
 
@@ -69,22 +71,24 @@ class MultiCheckbox extends Container
      * @param array $objectsVisited
      * @param array $inputFilters
      */
+    #[\Override]
     protected function getInputFiltersInternal(
         array &$objectsVisited,
         array &$inputFilters
     ): void {
-        if (in_array(spl_object_hash($this), $objectsVisited, true)) {
+        if (in_array(spl_object_id($this), $objectsVisited, true)) {
             // Prevent cycles.
             return;
         }
         if ($this->filter) {
             $inputFilters[$this->name] = $this->filter;
-            $objectsVisited []= spl_object_hash($this);
+            $objectsVisited [] = spl_object_id($this);
             return;
         }
 
         // Let's figure out which types are allowed by this checkbox
         $typesSeen = [];
+        $allowed = [];
         foreach ($this->ingredients as $ingredient) {
             if (!($ingredient instanceof CheckboxWithLabel)) {
                 continue;
@@ -93,16 +97,21 @@ class MultiCheckbox extends Container
             if (is_null($checkbox)) {
                 continue;
             }
+            $allowed[] = $checkbox->getValue();
             $type = $checkbox->getFilterType();
             if (is_null($type)) {
                 continue;
             }
             if (!in_array($type, $typesSeen, true)) {
-                $typesSeen []= $type;
+                $typesSeen [] = $type;
             }
         }
-        $inputFilters[$this->name] = self::determineInternalTypes($typesSeen);
-        $objectsVisited []= spl_object_hash($this);
+        $inputFilters[$this->name] = new ChoiceFilter(
+            $allowed,
+            self::determineInternalTypes($typesSeen),
+            true
+        );
+        $objectsVisited [] = spl_object_id($this);
     }
 
     /**
@@ -128,7 +137,7 @@ class MultiCheckbox extends Container
             return new ArrayFilter();
         }
         if (count($typesSeen) > 1) {
-            if (in_array('int', $typesSeen) && in_array('float', $typesSeen)) {
+            if (in_array('int', $typesSeen, true) && in_array('float', $typesSeen, true)) {
                 // int|float -> float
                 return new FloatArrayFilter();
             }
@@ -151,16 +160,17 @@ class MultiCheckbox extends Container
      * @return IngredientInterface
      * @throws CupcakeException
      */
+    #[\Override]
     public function populateUserInput(array $untrusted): IngredientInterface
     {
-        /** @var string[]|string[][] $pointer */
+        /** @var mixed $pointer */
         $pointer = &$untrusted;
         $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
         foreach ($pieces as $piece) {
-            if (!array_key_exists($piece, $pointer)) {
+            if (!is_array($pointer) || !array_key_exists($piece, $pointer)) {
                 return $this->clearAllChecks();
             }
-            /** @var string[]|string[][] $pointer */
+            /** @var mixed $pointer */
             $pointer = &$pointer[$piece];
         }
         /** @var string|string[] $pointer */
@@ -169,7 +179,7 @@ class MultiCheckbox extends Container
         }
         /** @var Checkbox $ingredient */
         foreach ($this->ingredients as $ingredient) {
-            $ingredient->setChecked(in_array($ingredient->getValue(), $pointer));
+            $ingredient->setChecked(in_array($ingredient->getValue(), $pointer, true));
         }
         return $this;
     }

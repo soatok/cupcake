@@ -34,6 +34,7 @@ class Fieldset extends Container
     /**
      * @return string
      */
+    #[\Override]
     public function renderBefore(): string
     {
         return sprintf(
@@ -46,6 +47,7 @@ class Fieldset extends Container
     /**
      * @return string
      */
+    #[\Override]
     public function renderAfter(): string
     {
         return '</fieldset>';

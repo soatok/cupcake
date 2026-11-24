@@ -2,15 +2,12 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Tests\Ingredients;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Soatok\Cupcake\Ingredients\InputTag;
 use Soatok\Cupcake\Ingredients\Label;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class LabelTest
- * @package Soatok\Cupcake\Tests\Ingredients
- * @covers Label
- */
+#[CoversClass(Label::class)]
 class LabelTest extends TestCase
 {
     public function testEmpty()

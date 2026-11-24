@@ -60,7 +60,7 @@ class Utilities
 
     public static function escapeIDAttribute(string $id): string
     {
-        return preg_replace('/[^A-Za-z0-9-_]/', '', $id);
+        return preg_replace('/[^A-Za-z0-9-_]/', '', $id) ?? '';
     }
 
     /**
@@ -75,7 +75,7 @@ class Utilities
         /** @var string $class */
         foreach ($classes as $class) {
             if (preg_match('#-?[_a-zA-Z]+[_a-zA-Z0-9-]*#', trim($class))) {
-                $filtered []= $class;
+                $filtered [] = $class;
             }
         }
         return implode(' ', $filtered);

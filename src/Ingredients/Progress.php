@@ -23,6 +23,7 @@ class Progress extends Element
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         $attributes = [];
@@ -38,6 +39,7 @@ class Progress extends Element
         return $attributes;
     }
 
+    #[\Override]
     public function render(): string
     {
         return sprintf(

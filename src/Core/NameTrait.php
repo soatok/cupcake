@@ -60,7 +60,7 @@ trait NameTrait
                     throw new CupcakeException('Could not parse element name');
                 }
                 // Only the first element gets included:
-                $output []= preg_replace('/[^A-Za-z0-9\-_]/', '', $left_chunk);
+                $output [] = preg_replace('/[^A-Za-z0-9\-_]/', '', $left_chunk);
             }
 
             $buffer = substr($buffer, $left_pos + 1);
@@ -71,7 +71,7 @@ trait NameTrait
             }
             $right_chunk = substr($buffer, 0, $right_pos);
             // The second element gets included:
-            $output []= preg_replace('/[^A-Za-z0-9\-_]/', '', $right_chunk);
+            $output [] = preg_replace('/[^A-Za-z0-9\-_]/', '', $right_chunk);
             $buffer = substr($buffer, $right_pos + 1);
             ++$index;
         } while (str_contains($buffer, '['));

@@ -42,12 +42,12 @@ trait ValueTrait
         $pointer = &$untrusted;
         $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
         foreach ($pieces as $piece) {
-            if (!array_key_exists($piece, $pointer)) {
+            if (!is_array($pointer) || !array_key_exists($piece, $pointer)) {
                 return $this->setValue('');
             }
             $pointer = &$pointer[$piece];
         }
-        $this->setValue($pointer);
+        $this->setValue(is_scalar($pointer) ? (string) $pointer : '');
         return $this;
     }
 }

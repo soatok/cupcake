@@ -10,7 +10,4 @@ use Soatok\Cupcake\Core\Container;
  *
  * An empty grouping of elements (and containers)
  */
-class Grouping extends Container
-{
-
-}
+class Grouping extends Container {}

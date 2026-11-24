@@ -7,7 +7,7 @@
 
 Sweet and fast form processing for PHP projects.
 
-**Requires PHP 8 or newer.**
+**Requires PHP 8.2 or newer.**
 
 ## Installation
 

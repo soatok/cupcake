@@ -2,9 +2,12 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake\Security\AntiCSRF;
 
+use Override;
+use Random\RandomException;
 use Soatok\Cupcake\Core\AntiCSRFInterface;
 use Soatok\Cupcake\Exceptions\CupcakeException;
 use Soatok\Cupcake\Ingredients\Input\Hidden;
+use TypeError;
 
 /**
  * Class CookieBacked
@@ -20,6 +23,7 @@ class CookieBacked implements AntiCSRFInterface
      * CookieBacked constructor.
      * @param string $cookieName
      * @param string $formName
+     * @param array|null $cookie
      */
     public function __construct(
         string $cookieName = 'cupcake-csrf',
@@ -29,9 +33,9 @@ class CookieBacked implements AntiCSRFInterface
         $this->cookieName = $cookieName;
         $this->formName = $formName;
         if (!is_null($cookie)) {
-            $this->cookie =& $cookie;
+            $this->cookie = & $cookie;
         } else {
-            $this->cookie =& $_COOKIE;
+            $this->cookie = & $_COOKIE;
         }
     }
 
@@ -40,12 +44,13 @@ class CookieBacked implements AntiCSRFInterface
      * @return string
      *
      * @throws CupcakeException
+     * @throws RandomException
      */
     protected function getCookieValue(bool $generate): string
     {
         if (isset($this->cookie[$this->cookieName])) {
             if (!is_string($this->cookie[$this->cookieName])) {
-                throw new \TypeError('Cookie value is not a string');
+                throw new TypeError('Cookie value is not a string');
             }
             return $this->cookie[$this->cookieName];
         }
@@ -71,32 +76,34 @@ class CookieBacked implements AntiCSRFInterface
             'httponly' => true,
             'samesite' => 'Strict'
         ]);
+        $this->cookie[$this->cookieName] = $token;
         return $token;
     }
 
     /**
      * @return Hidden
      * @throws CupcakeException
+     * @throws RandomException
      */
+    #[Override]
     public function getHiddenElement(): Hidden
     {
-        return (new Hidden('anti-csrf'))
+        return (new Hidden($this->formName))
             ->setValue($this->getCookieValue(true));
     }
 
     /**
      * @param array<string, scalar> $formData
      * @return bool
-     *
-     * @throws CupcakeException
      */
+    #[Override]
     public function validate(array $formData): bool
     {
         if (!isset($formData[$this->formName])) {
             return false;
         }
         if (!is_string($formData[$this->formName])) {
-            throw new \TypeError('Input is not a string');
+            return false;
         }
         return $this->checkToken($formData[$this->formName]);
     }
@@ -106,20 +113,23 @@ class CookieBacked implements AntiCSRFInterface
      *
      * @param string $token
      * @return bool
-     *
-     * @throws CupcakeException
      */
+    #[Override]
     public function checkToken(string $token): bool
     {
-        $expected = $this->getCookieValue(false);
-        return hash_equals($expected, $token);
+        $expected = $this->cookie[$this->cookieName] ?? null;
+        return is_string($expected)
+            && $expected !== ''
+            && hash_equals($expected, $token);
     }
 
     /**
      * Generates a new CSRF protection token
      *
      * @return string
+     * @throws RandomException
      */
+    #[Override]
     public function generateToken(): string
     {
         return bin2hex(random_bytes(32));
@@ -128,6 +138,7 @@ class CookieBacked implements AntiCSRFInterface
     /**
      * @return string
      */
+    #[Override]
     public function getFormName(): string
     {
         return $this->formName;

@@ -3,15 +3,19 @@ declare(strict_types=1);
 namespace Soatok\Cupcake\Blends;
 
 use Exception;
-use ParagonIE\Ionizer\Filter\AllowList;
-use Soatok\Cupcake\Core\Container;
-use Soatok\Cupcake\Core\IngredientInterface;
-use Soatok\Cupcake\Core\NameTrait;
-use Soatok\Cupcake\Core\ValueTrait;
+use Soatok\Cupcake\Core\{
+    ChoiceFilter,
+    Container,
+    IngredientInterface,
+    NameTrait,
+    ValueTrait
+};
 use Soatok\Cupcake\Exceptions\CupcakeException;
 use Soatok\Cupcake\FilterContainer;
-use Soatok\Cupcake\Ingredients\Input\Radio;
-use Soatok\Cupcake\Ingredients\Label;
+use Soatok\Cupcake\Ingredients\{
+    Input\Radio,
+    Label
+};
 
 /**
  * Class RadioSet
@@ -19,7 +23,8 @@ use Soatok\Cupcake\Ingredients\Label;
  */
 class RadioSet extends Container
 {
-    use NameTrait, ValueTrait;
+    use NameTrait;
+    use ValueTrait;
 
     /**
      * RadioSet constructor.
@@ -36,21 +41,23 @@ class RadioSet extends Container
      * @param array $objectsVisited
      * @param array $inputFilters
      */
+    #[\Override]
     protected function getInputFiltersInternal(
         array &$objectsVisited,
         array &$inputFilters
     ): void {
-        if (in_array(spl_object_hash($this), $objectsVisited, true)) {
+        if (in_array(spl_object_id($this), $objectsVisited, true)) {
             // Prevent cycles.
             return;
         }
         $allowList = [];
-        /** @var Radio $ingredient */
         foreach ($this->ingredients as $ingredient) {
-            $allowList []= $ingredient->getValue();
+            if ($ingredient instanceof Radio) {
+                $allowList [] = $ingredient->getValue();
+            }
         }
-        $inputFilters[$this->name] = new AllowList(...$allowList);
-        $objectsVisited []= spl_object_hash($this);
+        $inputFilters[$this->name] = new ChoiceFilter($allowList);
+        $objectsVisited [] = spl_object_id($this);
     }
 
     /**
@@ -86,17 +93,18 @@ class RadioSet extends Container
      * @return IngredientInterface
      * @throws CupcakeException
      */
+    #[\Override]
     public function populateUserInput(array $untrusted): IngredientInterface
     {
         $this->clearAllChecks();
-        /** @var string[]|string[][] $pointer */
+        /** @var mixed $pointer */
         $pointer = &$untrusted;
         $pieces = explode(FilterContainer::SEPARATOR, $this->getIonizerName());
         foreach ($pieces as $piece) {
-            if (!array_key_exists($piece, $pointer)) {
+            if (!is_array($pointer) || !array_key_exists($piece, $pointer)) {
                 return $this;
             }
-            /** @var string[]|string[][] $pointer */
+            /** @var mixed $pointer */
             $pointer = &$pointer[$piece];
         }
         /** @var string|string[] $pointer */

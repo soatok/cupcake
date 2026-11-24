@@ -2,10 +2,14 @@
 declare(strict_types=1);
 namespace Soatok\Cupcake;
 
-use Soatok\Cupcake\Core\AntiCSRFInterface;
-use Soatok\Cupcake\Core\Container;
-use Soatok\Cupcake\Core\Utilities;
+use ParagonIE\Ionizer\InvalidDataException;
+use Soatok\Cupcake\Core\{
+    AntiCSRFInterface,
+    Container,
+    Utilities
+};
 use Soatok\Cupcake\Exceptions\CupcakeException;
+use Soatok\Cupcake\Ingredients\Input\Hidden;
 
 /**
  * Class Form
@@ -20,6 +24,73 @@ class Form extends Container
     protected ?AntiCSRFInterface $antiCSRF = null;
 
     /**
+     * @var list<callable(array): array<string, list<string>>>
+     */
+    protected array $validators = [];
+
+    /**
+     * @param callable(array): array<string, list<string>> $validator $validator
+     * @return self
+     */
+    public function addValidator(callable $validator): self
+    {
+        $this->validators[] = $validator;
+        return $this;
+    }
+
+    /**
+     * @throws CupcakeException
+     */
+    public function submit(array $untrusted): ValidationResult
+    {
+        if (!$this->antiCSRFdisabled && !$this->getAntiCSRF()->validate($untrusted)) {
+            return new ValidationResult([], [], ['Invalid or missing CSRF token.']);
+        }
+        $result = $this->getInputFilters()->validateInput($untrusted);
+        if (!$result->isValid()) {
+            return $result;
+        }
+        $data = $result->getData();
+        $fieldErrors = [];
+        $formErrors = [];
+        foreach ($this->validators as $validator) {
+            foreach ($validator($data) as $path => $messages) {
+                if ($path === '') {
+                    $formErrors = array_merge($formErrors, $messages);
+                } elseif ($messages) {
+                    $fieldErrors[$path] = array_merge($fieldErrors[$path] ?? [], $messages);
+                }
+            }
+        }
+        return new ValidationResult($data, $fieldErrors, $formErrors);
+    }
+
+    /**
+     * @throws CupcakeException
+     * @throws InvalidDataException
+     */
+    #[\Override]
+    public function getValidFormInput(array $untrusted): array
+    {
+        if (!$this->antiCSRFdisabled && !$this->getAntiCSRF()->validate($untrusted)) {
+            throw new InvalidDataException('Invalid or missing CSRF token.');
+        }
+        return parent::getValidFormInput($untrusted);
+    }
+
+    /**
+     * @throws CupcakeException
+     */
+    #[\Override]
+    protected function getInputFiltersInternal(array &$objectsVisited, array &$inputFilters): void
+    {
+        parent::getInputFiltersInternal($objectsVisited, $inputFilters);
+        if (!$this->antiCSRFdisabled) {
+            unset($inputFilters[$this->getAntiCSRF()->getFormName()]);
+        }
+    }
+
+    /**
      * Returns a map where:
      *
      * - key   -> key to include in flattenAttributes()
@@ -27,6 +98,7 @@ class Form extends Container
      *
      * @return array<string, ?string>
      */
+    #[\Override]
     public function customAttributes(): array
     {
         $mapping = [
@@ -73,10 +145,18 @@ class Form extends Container
     public function finalizeCsrfElement(): self
     {
         if (!$this->antiCSRFdisabled) {
-            if (!$this->elementExistsWithName($this->getAntiCSRF()->getFormName())) {
-                // We need to inject this.
-                $this->append($this->getAntiCSRF()->getHiddenElement());
+            $hidden = $this->getAntiCSRF()->getHiddenElement();
+            foreach ($this->ingredients as $ingredient) {
+                if ($ingredient instanceof Hidden
+                    && $ingredient->getName() === $hidden->getName()) {
+                    $ingredient->setValue($hidden->getValue());
+                    return $this;
+                }
             }
+            if ($this->elementExistsWithName($hidden->getName())) {
+                throw new CupcakeException('CSRF field name conflicts with another element.');
+            }
+            $this->append($hidden);
         }
         return $this;
     }
@@ -118,6 +198,7 @@ class Form extends Container
     /**
      * @return string
      */
+    #[\Override]
     public function renderAfter(): string
     {
         return '</form>';
@@ -126,6 +207,7 @@ class Form extends Container
     /**
      * @return string
      */
+    #[\Override]
     public function renderBefore(): string
     {
         return sprintf(
@@ -138,6 +220,7 @@ class Form extends Container
      * @return string
      * @throws CupcakeException
      */
+    #[\Override]
     public function render(): string
     {
         if (!$this->antiCSRFdisabled) {

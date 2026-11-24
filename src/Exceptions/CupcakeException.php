@@ -6,7 +6,4 @@ namespace Soatok\Cupcake\Exceptions;
  * Class CupcakeException
  * @package Soatok\Cupcake\Exceptions
  */
-class CupcakeException extends \Exception
-{
-
-}
+class CupcakeException extends \Exception {}
