@@ -64,7 +64,7 @@ use his open source software.
 ![**Yes!**](docs/Soatok/Soatok-Yes.png)
 
 The author, Soatok, is a furry. [The mascot](docs/Neophyte)
-is a protogen (a fictitious species created within the furry fandom,
+is a protogen (a fictitious RAM-loving species created within the furry fandom,
 for the furry fandom to enjoy).
 
 You can learn more about the Furry Fandom [here](https://soatok.blog/2020/04/23/never-underestimate-the-furry-fandom/).
